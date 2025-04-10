@@ -6,4 +6,10 @@
         <item name="strokeColor">#C5C4CD</item>
         <item name="strokeWidth">5dp</item>
     </style>
+
+    <style name="DatePickerTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorAccent">#313037</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
 </resources>

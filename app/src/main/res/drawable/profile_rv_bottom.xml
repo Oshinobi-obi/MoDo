@@ -1,0 +1,7 @@
+<!--For Border/Corner Radius on Sign up-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#DBDAE1"/>
+    <stroke android:color="#313037" android:width="1dp" />
+    <corners android:bottomRightRadius="20dp"
+        android:bottomLeftRadius="20dp"/>
+</shape>

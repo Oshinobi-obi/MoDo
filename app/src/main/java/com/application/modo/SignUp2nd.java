@@ -1,6 +1,6 @@
 package com.application.modo;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,6 +15,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,7 +33,7 @@ public class SignUp2nd extends AppCompatActivity {
     private EditText etPassword2, etReEnterPassword1;
     private CheckBox checkBox;
     private Button btnSignUp;
-    private TextView tvRequirement1, tvRequirement2, tvRequirement3, tvRequirement4, tvPasswordMismatch;
+    private TextView tvRequirement1, tvRequirement2, tvRequirement3, tvRequirement4, tvPasswordMismatch, tvAgreement1;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String email, username;
@@ -54,6 +56,7 @@ public class SignUp2nd extends AppCompatActivity {
         tvRequirement3 = findViewById(R.id.tvRequirement3);
         tvRequirement4 = findViewById(R.id.tvRequirement4);
         tvPasswordMismatch = findViewById(R.id.tvPasswordMismatch);
+        tvAgreement1 = findViewById(R.id.tvAgreement1);
 
         email = getIntent().getStringExtra("email");
         username = getIntent().getStringExtra("username");
@@ -118,6 +121,9 @@ public class SignUp2nd extends AppCompatActivity {
 
             createAccount(email, password);
         });
+
+        // Set up the click listener for Terms and Conditions TextView
+        tvAgreement1.setOnClickListener(v -> showTermsAndConditionsDialog());
     }
 
     private void checkPasswordMatch() {
@@ -206,6 +212,15 @@ public class SignUp2nd extends AppCompatActivity {
                 });
     }
 
+    private void showTermsAndConditionsDialog() {
+        Dialog termsDialog = new Dialog(SignUp2nd.this);
+        termsDialog.setContentView(R.layout.dialog_termsandcondition);
+
+        Button btnCloseDialog = termsDialog.findViewById(R.id.btnCloseDialog);
+        btnCloseDialog.setOnClickListener(v -> termsDialog.dismiss());
+
+        termsDialog.show();
+    }
 
     private void setupPasswordToggle(EditText editText) {
         final boolean[] isVisible = {false};

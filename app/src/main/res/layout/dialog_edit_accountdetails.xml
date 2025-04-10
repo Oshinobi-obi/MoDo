@@ -45,7 +45,7 @@
             app:layout_constraintTop_toBottomOf="@+id/etUsername5" />
 
         <Button
-            android:id="@+id/btnDone1"
+            android:id="@+id/btnDone"
             android:layout_width="281dp"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
@@ -86,7 +86,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUsername6" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCTDeadlineDuration" />
 
         <View
             android:id="@+id/divider"
@@ -128,7 +128,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvPassword5" />
 
         <TextView
-            android:id="@+id/tvUsername6"
+            android:id="@+id/tvCTDeadlineDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

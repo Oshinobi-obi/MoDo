@@ -2,8 +2,6 @@ package com.application.modo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,13 +46,13 @@ public class Home extends AppCompatActivity {
         });
 
         ibtnAnalytics.setOnClickListener(v -> {
-            startActivity(new Intent(this, Analysis.class));
+            startActivity(new Intent(this, Analytics.class));
             overridePendingTransition(0, 0);
             finish();
         });
 
         ibtnProfile1.setOnClickListener(v -> {
-            startActivity(new Intent(Home.this, ProfileBadges.class));
+            startActivity(new Intent(Home.this, Profile.class));
             overridePendingTransition(0, 0);
             finish();
         });

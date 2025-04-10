@@ -113,10 +113,11 @@ public class Login extends AppCompatActivity {
 
                                         checkmarkView.postDelayed(() -> {
                                             loadingOverlay.setVisibility(View.GONE);
-                                            startActivity(new Intent(this, Home.class));
+                                            startActivity(new Intent(this, Home.class));  // Change from Home.class to ActivityMain.class
                                             overridePendingTransition(0, 0);
                                             finish();
                                         }, 1000);
+
                                     } else {
                                         // ❌ Incorrect password
                                         final long[] attempts = {userDoc.get("failedAttempts") instanceof Number

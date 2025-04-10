@@ -45,6 +45,11 @@
     <string name="Profile1">Profile</string>
     <string name="AddTask1">Add Task</string>
 
+    <!--activity_analysis.xml-->
+    <string name="WEEKLY">WEEKLY</string>
+    <string name="MONTHLY">MONTHLY</string>
+    <string name="OVERALL">OVERALL</string>
+
     <!--Hardcode Strings Problem-->
 
 </resources>

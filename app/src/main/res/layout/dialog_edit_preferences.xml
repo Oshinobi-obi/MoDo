@@ -54,7 +54,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvAccountDetails2" />
 
         <Button
-            android:id="@+id/btnDone1"
+            android:id="@+id/btnDone"
             android:layout_width="281dp"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"

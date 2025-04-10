@@ -66,6 +66,7 @@
                         android:layout_width="320dp"
                         android:layout_height="193dp"
                         android:background="@drawable/important"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvImportant1">
 
@@ -156,6 +157,7 @@
                         android:layout_height="140dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/currenttask"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvCurrentTaskSeeAll1">
 
@@ -243,6 +245,7 @@
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/tasks"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTask1">
 
@@ -272,7 +275,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/tvTaskTitle1" />
 
                         <TextView
-                            android:id="@+id/tvTaskCompletedDate1"
+                            android:id="@+id/tvTaskDeadline"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="22dp"
@@ -311,52 +314,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Search -->
-            <View
-                android:id="@+id/search"
-                android:layout_width="320dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/search"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvJourney1" />
-
             <!-- Search Bar Layout -->
-            <LinearLayout
-                android:layout_width="320dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvJourney1">
-
-                <SearchView
-                    android:id="@+id/srchvSearch1"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:forceDarkAllowed="true"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="Search"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/etSearch1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:autofillHints="search"
-                    android:backgroundTint="#C5C4CD"
-                    android:ems="10"
-                    android:hint="@string/search"
-                    android:inputType="text"
-                    android:textColor="#000000"
-                    android:textColorHint="#808080" />
-            </LinearLayout>
 
             <!-- Username TextView -->
             <TextView
@@ -413,24 +371,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- ADD TASK BUTTON -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddTask1"
-            android:layout_width="101dp"
-            android:layout_height="101dp"
-            android:clickable="true"
-            android:contentDescription="@string/AddTask1"
-            android:translationY="-20dp"
-            app:backgroundTint="#313037"
-            app:fabCustomSize="101dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:maxImageSize="40dp"
-            app:shapeAppearance="@style/CircularShape"
-            app:srcCompat="@android:drawable/ic_input_add"
-            app:tint="@color/white" />
 
         <!-- BOTTOM NAV BAR -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -493,6 +433,25 @@
                     app:srcCompat="@drawable/profileinactive" />
             </LinearLayout>
         </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddTask1"
+            android:layout_width="101dp"
+            android:layout_height="101dp"
+            android:clickable="true"
+            android:contentDescription="@string/AddTask1"
+            android:translationY="-20dp"
+            app:backgroundTint="#313037"
+            app:fabCustomSize="101dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:maxImageSize="40dp"
+            app:shapeAppearance="@style/CircularShape"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

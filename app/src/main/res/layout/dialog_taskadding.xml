@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvLabel1"
+            android:id="@+id/tvCTLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
@@ -27,7 +27,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUsername6" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCTDeadlineDuration" />
 
         <Spinner
             android:id="@+id/spnrTimePicker1"
@@ -35,7 +35,7 @@
             android:layout_height="48dp"
             android:layout_marginStart="61dp"
             android:layout_marginTop="5dp"
-            app:layout_constraintStart_toEndOf="@+id/tvLabel1"
+            app:layout_constraintStart_toEndOf="@+id/tvCTLabel"
             app:layout_constraintTop_toBottomOf="@+id/spnrPriorityLevel1" />
 
         <Spinner
@@ -44,7 +44,7 @@
             android:layout_height="48dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            app:layout_constraintStart_toEndOf="@+id/tvUsername6"
+            app:layout_constraintStart_toEndOf="@+id/tvCTDeadlineDuration"
             app:layout_constraintTop_toBottomOf="@+id/etmlTaskDescription1" />
 
         <ImageView
@@ -58,7 +58,7 @@
             app:layout_constraintTop_toBottomOf="@+id/etTaskTitle1" />
 
         <Button
-            android:id="@+id/btnDone1"
+            android:id="@+id/btnDone"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginEnd="25dp"
@@ -103,7 +103,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvUsername6"
+            android:id="@+id/tvCTDeadlineDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
@@ -141,7 +141,7 @@
             android:layout_marginTop="5dp"
             android:backgroundTint="#DAD9E0"
             android:fontFamily="@font/poppins"
-            android:text="Select Deadline"
+            android:text="03/10/2025 - 11:00am"
             android:textColor="#313037"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/imageView2"

@@ -14,18 +14,21 @@
         android:theme="@style/Theme.Modo"
         tools:targetApi="31">
 
+        <!-- Other activities -->
+        <activity android:name=".Home" android:exported="false" />
+        <activity android:name=".Profile" android:exported="false" />
         <activity android:name=".ProfileSettings" android:exported="false" />
         <activity android:name=".ProfileRewards" android:exported="false" />
         <activity android:name=".ProfilePoints" android:exported="false" />
         <activity android:name=".ProfileBadges" android:exported="false" />
-        <activity android:name=".Analysis" android:exported="false" />
+        <activity android:name=".Analytics" android:exported="false" />
         <activity android:name=".Calendar" android:exported="false" />
-        <activity android:name=".Home" android:exported="false" />
         <activity android:name=".SignUp2nd" android:exported="false" />
         <activity android:name=".SignUp1st" android:exported="false" />
         <activity android:name=".ForgotPassword" android:exported="false" />
         <activity android:name=".Login" android:exported="false" />
 
+        <!-- Landing page (entry point) -->
         <activity android:name=".Landing" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,9 +36,10 @@
             </intent-filter>
         </activity>
 
+        <!-- Start the ActivityMain activity after login -->
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>
