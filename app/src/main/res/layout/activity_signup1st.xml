@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:fitsSystemWindows="true"
+    tools:context=".SignUp1st">
+
+    <TextView
+        android:id="@+id/tvLogin3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:fontFamily="@font/merriweather_bold"
+        android:paddingLeft="5dp"
+        android:paddingTop="16dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="16dp"
+        android:text="@string/Login1"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toTopOf="@+id/btnContinue2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvHaveAccount2"
+        app:layout_constraintTop_toBottomOf="@+id/etEmail1" />
+
+    <TextView
+        android:id="@+id/tvHaveAccount2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:fontFamily="@font/merriweather"
+        android:text="@string/AlreadyHaveAnAccount1"
+        android:textColor="#3b3b3b"
+        app:layout_constraintBottom_toTopOf="@+id/btnContinue2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.331"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSignUp3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/SignUp2"
+        android:textColor="#000000"
+        android:textSize="38sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvUsername2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.205"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/tvUsername2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/merriweather"
+        android:text="@string/Username2"
+        android:textColor="#3b3b3b"
+        app:layout_constraintBottom_toTopOf="@+id/etUsername2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEmail1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/merriweather"
+        android:text="@string/EmailAddress2"
+        android:textColor="#3b3b3b"
+        app:layout_constraintBottom_toTopOf="@+id/etEmail1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.174"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etEmail1"
+        android:layout_width="300dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="25dp"
+        android:autofillHints="emailAddress"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:fontFamily="@font/merriweather"
+        android:hint="@string/EmailAddress2"
+        android:importantForAccessibility="no"
+        android:inputType="textEmailAddress"
+        android:padding="18dp"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvHaveAccount2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEmailStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etEmail1" />
+
+    <Button
+        android:id="@+id/btnContinue2"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="100dp"
+        android:backgroundTint="#313037"
+        android:fontFamily="@font/poppins"
+        android:padding="11dp"
+        android:text="@string/Continue2"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etUsername2"
+        android:layout_width="300dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="25dp"
+        android:autofillHints="username"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:fontFamily="@font/merriweather"
+        android:hint="@string/Username2"
+        android:importantForAccessibility="no"
+        android:inputType="text"
+        android:padding="18dp"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvEmail1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUsernameStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etUsername2" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/online_test_4"
+        tools:src="@drawable/online_test_4"
+        tools:srcCompat="@drawable/online_test_4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

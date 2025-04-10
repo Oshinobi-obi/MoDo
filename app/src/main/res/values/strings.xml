@@ -1,0 +1,50 @@
+<resources>
+    <!--Hardcode Strings Problem-->
+    <!--If Same Characters use 1 for Uppercase/2 for Lowercase-->
+    <string name="app_name">Modo</string>
+
+    <!--activity_landing.xml-->
+    <string name="AlreadyHaveAnAccount1">Already have an account?</string>
+    <string name="SignUpWithEmail2">sign up with email</string>
+    <string name="Login1">Login</string>
+    <string name="Login2">login</string>
+    <string name="SignUp1">Sign Up</string>
+    <string name="SignUp2">sign up</string>
+
+    <!--activity_login.xml-->
+    <string name="DontHaveAnAccount">Don\'t have an account?</string>
+    <string name="ForgotYourPassword">Forgot your password?</string>
+    <string name="Password2">password</string>
+    <string name="Username2">username</string>
+    <string name="Continue2">continue</string>
+
+    <!--activity_forgot_password.xml-->
+    <string name="ForgetPassword2">forget password</string>
+    <string name="ResetInstruction2">we’ll send you the reset instructions shortly.</string>
+    <string name="EnterEmail2">enter your email</string>
+    <string name="ResetPassword2">reset password</string>
+
+    <!--activity_signup1st.xml-->
+    <string name="EmailAddress2">email address</string>
+
+    <!--activity_signup2nd.xml-->
+    <string name="re_enter_password">re-enter password</string>
+    <string name="ConfirmPassword">confirm password</string>
+    <string name="EnterPassword2">enter password</string>
+    <string name="SetPassword1">set password</string>
+    <string name="Agreement">By creating an account, you agree to the terms of use and our privacy policy</string>
+
+    <!--activity_home.xml-->
+    <string name="search">search</string>
+    <string name="username">Username</string>
+    <string name="Journey1">Let’s start your journey!</string>
+    <string name="Hello1">Hello, </string>
+    <string name="Home1">Home</string>
+    <string name="Calendar1">Calendar</string>
+    <string name="Analytics1">Analytics</string>
+    <string name="Profile1">Profile</string>
+    <string name="AddTask1">Add Task</string>
+
+    <!--Hardcode Strings Problem-->
+
+</resources>

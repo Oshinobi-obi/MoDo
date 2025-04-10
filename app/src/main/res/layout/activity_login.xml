@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    tools:context=".Login"
+    tools:layout_editor_absoluteX="-14dp"
+    tools:layout_editor_absoluteY="-17dp">
+
+    <!-- Login Header -->
+
+    <TextView
+        android:id="@+id/tvAccountLocked1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Account locked. Please reset your password."
+        android:textColor="#FF0000"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:fontFamily="@font/poppins"
+        app:layout_constraintTop_toBottomOf="@id/btnContinue1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- Username Label -->
+
+    <TextView
+        android:id="@+id/tvLogin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/Login2"
+        android:textColor="#000000"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/tvUsername1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="170dp"
+        android:fontFamily="@font/merriweather"
+        android:text="@string/Username2"
+        android:textColor="#3b3b3b"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLogin2" />
+
+    <!-- Username Field -->
+
+    <TextView
+        android:id="@+id/tvDontHaveAnAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginBottom="56dp"
+        android:fontFamily="@font/merriweather"
+        android:text="Don't have an account?"
+        android:textColor="#3b3b3b"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.38"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSignUpLnk"
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="39dp"
+        android:clickable="true"
+        android:contextClickable="true"
+        android:focusable="auto"
+        android:fontFamily="@font/merriweather_bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="Sign Up"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/etUsername1"
+        android:layout_width="250dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="5dp"
+        android:autofillHints="username"
+        android:background="@drawable/border"
+        android:hint="@string/Username2"
+        android:inputType="textEmailAddress"
+        android:padding="18dp"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername1" />
+
+    <!-- Password Label -->
+    <TextView
+        android:id="@+id/tvPassword1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/merriweather"
+        android:text="@string/Password2"
+        android:textColor="#3b3b3b"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etUsername1" />
+
+    <!-- Password Field -->
+    <EditText
+        android:id="@+id/etPassword1"
+        android:layout_width="250dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="5dp"
+        android:autofillHints="password"
+        android:background="@drawable/border"
+        android:drawableEnd="@drawable/ic_eye_hide"
+        android:drawablePadding="8dp"
+        android:hint="@string/Password2"
+        android:inputType="textPassword"
+        android:padding="18dp"
+        android:paddingEnd="16dp"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPassword1" />
+
+    <!-- Continue Button -->
+    <Button
+        android:id="@+id/btnContinue1"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="#313037"
+        android:fontFamily="@font/poppins"
+        android:padding="11dp"
+        android:text="@string/Continue2"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etPassword1" />
+
+    <!-- Forgot Password -->
+    <TextView
+        android:id="@+id/tvForgotPassword1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:fontFamily="@font/merriweather"
+        android:padding="16dp"
+        android:text="@string/ForgotYourPassword"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnContinue1" />
+
+    <!-- Modal Loading Overlay -->
+    <RelativeLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B3FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <ImageView
+                android:id="@+id/checkmarkView"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_check_circle"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="200dp"
+        android:layout_height="137dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/update_sync_3"
+        tools:srcCompat="@drawable/update_sync_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
