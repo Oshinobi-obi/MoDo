@@ -3,16 +3,12 @@ package com.application.modo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ProgressBar;
 import android.os.Handler;
 import android.os.Looper;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Landing extends AppCompatActivity {
@@ -27,15 +23,6 @@ public class Landing extends AppCompatActivity {
 
         btnSignUpEmail1 = findViewById(R.id.btnSignUpEmail1);
         tvLogin1 = findViewById(R.id.tvLogin1);
-
-        // ✨ Load animations
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        Animation bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
-
-        // ✨ Start animations
-        btnSignUpEmail1.startAnimation(bounce);
-        tvLogin1.startAnimation(fadeIn);
 
         // ➤ Redirect to Sign Up
         btnSignUpEmail1.setOnClickListener(view -> {
@@ -83,10 +70,6 @@ public class Landing extends AppCompatActivity {
 
                 btnSignUpEmail1.setVisibility(View.VISIBLE);
                 tvLogin1.setVisibility(View.VISIBLE);
-
-                Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-                btnSignUpEmail1.startAnimation(fadeIn);
-                tvLogin1.startAnimation(fadeIn);
             }
         }, 1000);
     }

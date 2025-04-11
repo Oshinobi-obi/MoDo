@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -59,19 +57,6 @@ public class SignUp2nd extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
 
         // ✨ Animations
-        Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        Animation bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
-
-        etPassword2.startAnimation(fade);
-        etReEnterPassword1.startAnimation(fade);
-        tvRequirement1.startAnimation(slideUp);
-        tvRequirement2.startAnimation(slideUp);
-        tvRequirement3.startAnimation(slideUp);
-        tvRequirement4.startAnimation(slideUp);
-        tvPasswordMismatch.startAnimation(fade);
-        checkBox.startAnimation(fade);
-        btnSignUp.startAnimation(bounce);
 
         etPassword2.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
