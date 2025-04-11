@@ -50,7 +50,6 @@ public class Landing extends AppCompatActivity {
 
         // Hide UI
         btnSignUpEmail1.setVisibility(View.GONE);
-        tvLogin1.setVisibility(View.GONE);
 
         // Show loading
         progressBar.setVisibility(View.VISIBLE);
@@ -69,7 +68,6 @@ public class Landing extends AppCompatActivity {
                 tvLoading.setVisibility(View.GONE);
 
                 btnSignUpEmail1.setVisibility(View.VISIBLE);
-                tvLogin1.setVisibility(View.VISIBLE);
             }
         }, 1000);
     }
