@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="28dp"
             android:fontFamily="@font/poppins"
             android:text="Label"
             android:textColor="#3b3b3b"
@@ -30,20 +31,15 @@
             app:layout_constraintTop_toBottomOf="@+id/tvUsername6" />
 
         <Spinner
-            android:id="@+id/spnrTimePicker1"
-            android:layout_width="214dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="61dp"
-            android:layout_marginTop="5dp"
-            app:layout_constraintStart_toEndOf="@+id/tvLabel1"
-            app:layout_constraintTop_toBottomOf="@+id/spnrPriorityLevel1" />
-
-        <Spinner
             android:id="@+id/spnrPriorityLevel1"
-            android:layout_width="214dp"
+            android:layout_width="184dp"
             android:layout_height="48dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
+            android:background="@drawable/spinner_border"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawablePadding="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:popupBackground="#ffffff"
             app:layout_constraintStart_toEndOf="@+id/tvUsername6"
             app:layout_constraintTop_toBottomOf="@+id/etmlTaskDescription1" />
 
@@ -61,25 +57,26 @@
             android:id="@+id/btnDone1"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginEnd="55dp"
             android:backgroundTint="#313037"
             android:fontFamily="@font/poppins"
             android:text="save"
             android:textColor="#ffffff"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spnrTimePicker1" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
             android:id="@+id/etTaskTitle1"
-            android:layout_width="361dp"
+            android:layout_width="330dp"
             android:layout_height="48dp"
             android:layout_marginTop="55dp"
             android:ems="10"
             android:fontFamily="@font/merriweather"
             android:hint="Add Title"
             android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#808080"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +115,7 @@
 
         <EditText
             android:id="@+id/etmlTaskDescription1"
-            android:layout_width="316dp"
+            android:layout_width="286dp"
             android:layout_height="90dp"
             android:layout_marginStart="70dp"
             android:layout_marginTop="5dp"
@@ -129,6 +126,8 @@
             android:hint="Add description"
             android:inputType="textMultiLine"
             android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#808080"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnDateTime" />
@@ -147,6 +146,18 @@
             app:layout_constraintStart_toEndOf="@+id/imageView2"
             app:layout_constraintTop_toBottomOf="@+id/etTaskTitle1" />
 
+        <Spinner
+            android:id="@+id/spnrLabelName1"
+            android:layout_width="184dp"
+            android:layout_height="48dp"
+            android:background="@drawable/spinner_border"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawablePadding="8dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="8dp"
+            android:popupBackground="#ffffff"
+            app:layout_constraintStart_toEndOf="@+id/tvLabel1"
+            app:layout_constraintTop_toBottomOf="@+id/spnrPriorityLevel1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

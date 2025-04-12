@@ -284,7 +284,9 @@ public class ProfileSettings extends AppCompatActivity {
         taskReminderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         breakReminderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTaskReminder.setAdapter(taskReminderAdapter);
+        spinnerTaskReminder.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
         spinnerBreakReminder.setAdapter(breakReminderAdapter);
+        spinnerBreakReminder.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
 
         // Select saved values or show hint (position 0)
         String currentTaskReminder = tvTaskReminder2.getText().toString();
