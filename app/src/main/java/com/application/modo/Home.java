@@ -1,19 +1,17 @@
 package com.application.modo;
 
-import android.app.Dialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import java.util.Calendar;
 import android.widget.*;
 import android.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -187,6 +185,7 @@ public class Home extends AppCompatActivity {
         CalendarView calendarView = view.findViewById(R.id.cvDatePicker1);
         Spinner timePicker = view.findViewById(R.id.spnrTimePicker1);
         Button btnDone = view.findViewById(R.id.btnDone1);
+
 
         // Style the calendar (requires style override — see note below)
         calendarView.setFocusedMonthDateColor(Color.BLACK);

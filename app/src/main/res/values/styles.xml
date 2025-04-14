@@ -6,4 +6,7 @@
         <item name="strokeColor">#C5C4CD</item>
         <item name="strokeWidth">5dp</item>
     </style>
+    <style name="NoScrollBarCalendarView" parent="android:Widget.Material.CalendarView">
+        <item name="android:scrollbars">none</item>
+    </style>
 </resources>

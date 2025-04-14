@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clAddTask1"
         android:layout_width="370dp"
-        android:layout_height="425dp"
+        android:layout_height="450dp"
         android:background="@drawable/calendars"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/clock"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cvDatePicker1" />
@@ -53,17 +53,21 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spnrTimePicker1"
-            app:layout_constraintVertical_bias="0.684" />
+            app:layout_constraintTop_toBottomOf="@+id/spnrTimePicker1" />
 
         <CalendarView
             android:id="@+id/cvDatePicker1"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:background="@drawable/calendaractive"
+            android:focusedMonthDateColor="#000000"
+            android:selectedWeekBackgroundColor="#E8E8E8"
+            android:unfocusedMonthDateColor="@android:color/darker_gray"
+            android:weekNumberColor="#000000"
+            android:weekSeparatorLineColor="#66FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
