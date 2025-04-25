@@ -14,6 +14,7 @@
         android:layout_marginStart="15dp"
         android:fontFamily="@font/merriweather"
         android:text="Status Description"
+        android:textColor="#3b3b3b"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStatusTitle" />
 
@@ -25,6 +26,7 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/merriweather"
         android:text="Status Title"
+        android:textColor="#3b3b3b"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +40,7 @@
         android:layout_marginBottom="15dp"
         android:fontFamily="@font/merriweather"
         android:text="Status Requirements"
+        android:textColor="#3b3b3b"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStatusDescription" />

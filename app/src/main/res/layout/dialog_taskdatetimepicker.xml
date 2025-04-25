@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="VisualLintBounds">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clAddTask1"
@@ -21,6 +22,7 @@
             android:id="@+id/spnrTaskDuration1"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:background="@drawable/spinner_border"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -31,16 +33,18 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/poppins"
             android:text="Task Duration"
+            android:textColor="#3b3b3b"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spnrTimePicker1" />
 
         <Spinner
-
             android:id="@+id/spnrTimePicker1"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:background="@drawable/spinner_dropdown_bg"
+            style="Spinner.AppCompat.Light"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -76,6 +80,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/poppins"
             android:text="Time"
+            android:textColor="#3b3b3b"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

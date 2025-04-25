@@ -6,6 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -107,21 +109,7 @@ public class Profile extends AppCompatActivity {
         for (String avatarName : avatarNames) {
             int resId = getResources().getIdentifier(avatarName, "drawable", getPackageName());
 
-            ImageView avatarView = new ImageView(this);
-            avatarView.setImageResource(resId);
-            avatarView.setAdjustViewBounds(true);
-            avatarView.setMaxHeight(150);
-            avatarView.setMaxWidth(150);
-
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.setMargins(10, 10, 10, 10);
-            params.setGravity(Gravity.CENTER);
-            avatarView.setLayoutParams(params);
-
-            avatarView.setOnClickListener(v -> {
-                selectedAvatarName = avatarName;
-                imgPreview.setImageResource(resId);
-            });
+            ImageView avatarView = getImageView(avatarName, resId, imgPreview);
 
             gridAvatars.addView(avatarView);
         }
@@ -134,6 +122,26 @@ public class Profile extends AppCompatActivity {
         });
 
         avatarDialog.show();
+    }
+
+    @NonNull
+    private ImageView getImageView(String avatarName, int resId, ImageView imgPreview) {
+        ImageView avatarView = new ImageView(this);
+        avatarView.setImageResource(resId);
+        avatarView.setAdjustViewBounds(true);
+        avatarView.setMaxHeight(150);
+        avatarView.setMaxWidth(150);
+
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        params.setMargins(10, 10, 10, 10);
+        params.setGravity(Gravity.CENTER);
+        avatarView.setLayoutParams(params);
+
+        avatarView.setOnClickListener(v -> {
+            selectedAvatarName = avatarName;
+            imgPreview.setImageResource(resId);
+        });
+        return avatarView;
     }
 
     private void updateAvatarInFirestore(String avatarName) {

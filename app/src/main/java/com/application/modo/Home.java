@@ -85,7 +85,7 @@ public class Home extends AppCompatActivity {
 
         findViewById(R.id.ibtnCalendar1).setOnClickListener(v -> startActivity(new Intent(this, Calendar.class)));
         findViewById(R.id.ibtnAnalytics1).setOnClickListener(v -> startActivity(new Intent(this, Analytics.class)));
-        findViewById(R.id.ibtnProfile1).setOnClickListener(v -> startActivity(new Intent(this, ProfileBadges.class)));
+        findViewById(R.id.ibtnProfile1).setOnClickListener(v -> startActivity(new Intent(this, Profile.class)));
     }
 
     private void showAddTaskDialog() {
@@ -169,12 +169,50 @@ public class Home extends AppCompatActivity {
         Button btnDone = view.findViewById(R.id.btnDone);
 
         List<String> timeOptions = new ArrayList<>();
-        for (int i = 1; i <= 12; i++) timeOptions.add(i + (i == 1 ? " hour" : " hours"));
+        timeOptions.add("1 hour");
+        timeOptions.add("2 hours");
+        timeOptions.add("3 hours");
+        for (int i = 4; i <= 12; i++) {
+            timeOptions.add(i + " hours");
+        }
 
-        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, timeOptions);
-        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item_limited, timeOptions) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView tv = (TextView) super.getView(position, convertView, parent);
+                tv.setTextColor(Color.BLACK);
+                tv.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.poppins));
+                return tv;
+            }
+
+            @NonNull
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
+                tv.setTextColor(Color.parseColor("#3b3b3b"));
+                tv.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.poppins));
+                return tv;
+            }
+        };
+        timeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_limited);
         timePicker.setAdapter(timeAdapter);
         timePicker.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
+
+        // Limit dropdown height so it only shows 3 items visible
+        timePicker.post(() -> {
+            try {
+                java.lang.reflect.Field popup = Spinner.class.getDeclaredField("mPopup");
+                popup.setAccessible(true);
+
+                Object popupWindow = popup.get(timePicker);
+                if (popupWindow instanceof android.widget.ListPopupWindow) {
+                    ((android.widget.ListPopupWindow) popupWindow).setHeight(400);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         btnDone.setOnClickListener(v -> {
             int year = datePicker.getYear();
