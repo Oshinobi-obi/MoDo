@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.*;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -46,13 +42,6 @@ public class Login extends AppCompatActivity {
         checkmarkView = findViewById(R.id.checkmarkView);
 
         setupPasswordToggle(etPassword1);
-
-        Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        etUsername1.startAnimation(fade);
-        etPassword1.startAnimation(fade);
-        btnContinue1.startAnimation(fade);
-        tvForgotPassword.startAnimation(fade);
-        tvSignUpLnk.startAnimation(fade);
 
         btnContinue1.setOnClickListener(view -> attemptLogin());
         tvForgotPassword.setOnClickListener(view -> {

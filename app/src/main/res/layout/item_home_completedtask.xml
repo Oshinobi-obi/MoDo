@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/clCurrentTaskItem"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/tasks"
+    android:id="@+id/clTask1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/tasks"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/tvCurrentTaskSeeAll1">
+    android:layout_marginBottom="5dp">
 
     <TextView
-        android:id="@+id/tvCompletedTaskTitle1"
+        android:id="@+id/tvTaskTitle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -22,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvCompletedTaskDescription1"
+        android:id="@+id/tvTaskDescription1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -32,10 +31,10 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCompletedTaskTitle1" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTaskTitle1" />
 
     <TextView
-        android:id="@+id/tvCompletedTaskDate"
+        android:id="@+id/tvTaskDeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

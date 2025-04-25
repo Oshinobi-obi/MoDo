@@ -38,7 +38,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.legacy.support.v4)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
@@ -53,7 +52,5 @@ dependencies {
     implementation("com.github.dhaval2404:imagepicker:2.1")
     implementation ("com.google.firebase:firebase-storage:20.2.1")
     implementation ("com.google.android.material:material:1.6.0")
-
-    // 📊 MPAndroidChart for bar charts
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

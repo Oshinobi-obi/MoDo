@@ -85,5 +85,5 @@ Modo is an intelligent productivity companion built to help users take control o
 ---
 
 <div align="center">
-  <i>This project was developed to be presented to SIA102 project.</i>
+  <i>This project was developed to be presented in SIA102 project.</i>
 </div>

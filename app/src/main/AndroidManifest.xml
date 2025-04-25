@@ -18,9 +18,6 @@
         <activity android:name=".Home" android:exported="false" />
         <activity android:name=".Profile" android:exported="false" />
         <activity android:name=".ProfileSettings" android:exported="false" />
-        <activity android:name=".ProfileRewards" android:exported="false" />
-        <activity android:name=".ProfilePoints" android:exported="false" />
-        <activity android:name=".ProfileBadges" android:exported="false" />
         <activity android:name=".Analytics" android:exported="false" />
         <activity android:name=".Calendar" android:exported="false" />
         <activity android:name=".SignUp2nd" android:exported="false" />

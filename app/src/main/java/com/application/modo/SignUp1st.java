@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,18 +43,6 @@ public class SignUp1st extends AppCompatActivity {
         tvEmailStatus = findViewById(R.id.tvEmailStatus);
 
         db = FirebaseFirestore.getInstance();
-
-        // ✨ Animations
-        Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        Animation bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
-        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-
-        etUsername2.startAnimation(fade);
-        etEmail1.startAnimation(fade);
-        btnContinue2.startAnimation(bounce);
-        tvLogin3.startAnimation(slideUp);
-        tvUsernameStatus.startAnimation(fade);
-        tvEmailStatus.startAnimation(fade);
 
         tvUsernameStatus.setVisibility(View.GONE);
         tvEmailStatus.setVisibility(View.GONE);

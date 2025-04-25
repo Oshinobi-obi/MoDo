@@ -30,7 +30,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvCTDeadlineDuration" />
 
         <Spinner
-            android:id="@+id/spnrTimePicker1"
+            android:id="@+id/spnrLabelName1"
             android:layout_width="214dp"
             android:layout_height="48dp"
             android:layout_marginStart="61dp"
@@ -69,7 +69,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spnrTimePicker1" />
+            app:layout_constraintTop_toBottomOf="@+id/spnrLabelName1" />
 
         <EditText
             android:id="@+id/etTaskTitle1"
