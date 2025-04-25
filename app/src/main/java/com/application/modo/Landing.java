@@ -1,30 +1,34 @@
 package com.application.modo;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.ProgressBar;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Landing extends AppCompatActivity {
 
-    private Button btnSignUpEmail1;
-    private TextView tvLogin1;
+    private final int NOTIFICATION_PERMISSION_REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
-        btnSignUpEmail1 = findViewById(R.id.btnSignUpEmail1);
-        tvLogin1 = findViewById(R.id.tvLogin1);
+        Button btnSignUpEmail1 = findViewById(R.id.btnSignUpEmail1);
+        TextView tvLogin1 = findViewById(R.id.tvLogin1);
 
-        // ➤ Redirect to Sign Up
+        requestNotificationPermission();
+
         btnSignUpEmail1.setOnClickListener(view -> {
             Intent intent = new Intent(Landing.this, SignUp1st.class);
             startActivity(intent);
@@ -32,7 +36,6 @@ public class Landing extends AppCompatActivity {
             finish();
         });
 
-        // ➤ Redirect to Login
         tvLogin1.setOnClickListener(view -> {
             Intent intent = new Intent(Landing.this, Login.class);
             startActivity(intent);
@@ -41,21 +44,27 @@ public class Landing extends AppCompatActivity {
         });
     }
 
+    private void requestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    NOTIFICATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
 
         ProgressBar progressBar = findViewById(R.id.progressBarLanding);
         TextView tvLoading = findViewById(R.id.tvLoading);
+        Button btnSignUpEmail1 = findViewById(R.id.btnSignUpEmail1);
 
-        // Hide UI
         btnSignUpEmail1.setVisibility(View.GONE);
-
-        // Show loading
         progressBar.setVisibility(View.VISIBLE);
         tvLoading.setVisibility(View.VISIBLE);
 
-        // Modern: Use Handler with Looper to avoid deprecation
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 Intent intent = new Intent(Landing.this, Home.class);

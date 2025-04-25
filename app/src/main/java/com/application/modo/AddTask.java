@@ -4,16 +4,37 @@ public class AddTask {
     private String title;
     private String description;
     private String priority;
-    private String timeSlot;
+    private String label;
     private String deadline;
 
+    // Required for Firebase
     public AddTask() {}
 
-    public AddTask(String title, String description, String priority, String timeSlot, String deadline) {
+    public AddTask(String title, String description, String priority, String label, String deadline) {
         this.title = title;
         this.description = description;
         this.priority = priority;
-        this.timeSlot = timeSlot;
+        this.label = label;
         this.deadline = deadline;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public String getTimeSlot() {
+        return label;
+    }
+
+    public String getDeadline() {
+        return deadline;
     }
 }

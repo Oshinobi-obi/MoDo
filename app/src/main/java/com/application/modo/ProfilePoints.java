@@ -1,201 +1,45 @@
 package com.application.modo;
 
-import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.widget.*;
-import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ProfilePoints extends AppCompatActivity {
+public class ProfilePoints extends Fragment {
 
-    private TextView tvUsername;
-    private ImageView imgvPicture;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
+    private RecyclerView rvProfilePoints;
+    private ProfilePointsAdapter adapter;
+    private List<ProfilePointsItem> pointList;
 
-    private Dialog avatarDialog;
-    private String selectedAvatarName = "default_avatar";
+    public ProfilePoints() {
+        // Required empty public constructor
+    }
 
-    private String[] avatarNames = {
-            "bear", "cat", "chicken", "dog", "gorilla", "owl",
-            "panda", "rabbit", "sealion"
-    };
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_points);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_profile_points, container, false);
 
-        tvUsername = findViewById(R.id.tvUsername);
-        imgvPicture = findViewById(R.id.imgvPicture);
+        rvProfilePoints = view.findViewById(R.id.rvProfilePoints);
+        rvProfilePoints.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        pointList = new ArrayList<>();
+        // Sample data
+        pointList.add(new ProfilePointsItem("Task Title 1", "01/01/2025", "+10 points"));
+        pointList.add(new ProfilePointsItem("Task Title 2", "03/10/2025", "+5 points"));
+        pointList.add(new ProfilePointsItem("Task Title 3", "04/25/2025", "+15 points"));
 
-        loadUserInfo();
+        adapter = new ProfilePointsAdapter(pointList);
+        rvProfilePoints.setAdapter(adapter);
 
-        Button btnRewards = findViewById(R.id.btnRewards);
-        Button btnBadges = findViewById(R.id.btnBadges);
-        Button btnSettings = findViewById(R.id.btnSettings1);
-        ImageButton ibtnHome = findViewById(R.id.ibtnHome1);
-        ImageButton ibtnCalendar = findViewById(R.id.ibtnCalendar1);
-        ImageButton ibtnAnalytics = findViewById(R.id.ibtnAnalytics1);
-
-        btnRewards.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileRewards.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        btnBadges.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileBadges.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        btnSettings.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileSettings.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        ibtnHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, Home.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        ibtnCalendar.setOnClickListener(v -> {
-            startActivity(new Intent(this, Calendar.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        ibtnAnalytics.setOnClickListener(v -> {
-            startActivity(new Intent(this, Analysis.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        imgvPicture.setOnClickListener(v -> showAvatarSelector());
-
-        setupNavigation();
-    }
-
-    private void loadUserInfo() {
-        String uid = mAuth.getCurrentUser().getUid();
-        db.collection("users").document(uid)
-                .get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        tvUsername.setText(document.getString("username"));
-                        String avatarName = document.getString("profile");
-                        if (avatarName == null || avatarName.isEmpty()) {
-                            avatarName = "default_avatar";
-                        }
-
-                        int resId = getResources().getIdentifier(avatarName, "drawable", getPackageName());
-                        imgvPicture.setImageResource(resId);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    tvUsername.setText("User");
-                    imgvPicture.setImageResource(R.drawable.default_avatar);
-                });
-    }
-
-    private void showAvatarSelector() {
-        avatarDialog = new Dialog(this);
-        avatarDialog.setContentView(R.layout.dialog_avatar_preview);
-        avatarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        avatarDialog.setCancelable(true);
-
-        ImageView imgPreview = avatarDialog.findViewById(R.id.imgPreview);
-        Button btnSave = avatarDialog.findViewById(R.id.btnSaveAvatar);
-        GridLayout gridAvatars = avatarDialog.findViewById(R.id.gridAvatars);
-
-        imgPreview.setImageDrawable(imgvPicture.getDrawable());
-
-        for (String avatarName : avatarNames) {
-            int resId = getResources().getIdentifier(avatarName, "drawable", getPackageName());
-
-            ImageView avatarView = new ImageView(this);
-            avatarView.setImageResource(resId);
-            avatarView.setAdjustViewBounds(true);
-            avatarView.setMaxHeight(150);
-            avatarView.setMaxWidth(150);
-
-            // ✅ Set LayoutParams to center inside the GridLayout cell
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.setMargins(10, 10, 10, 10);
-            params.width = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.setGravity(Gravity.CENTER);
-            avatarView.setLayoutParams(params);
-
-            avatarView.setOnClickListener(v -> {
-                selectedAvatarName = avatarName;
-                imgPreview.setImageResource(resId);
-            });
-
-            gridAvatars.addView(avatarView);
-        }
-
-        btnSave.setOnClickListener(v -> {
-            int resId = getResources().getIdentifier(selectedAvatarName, "drawable", getPackageName());
-            imgvPicture.setImageResource(resId);
-            updateAvatarInFirestore(selectedAvatarName);
-            avatarDialog.dismiss();
-        });
-
-        avatarDialog.show();
-    }
-
-    private void updateAvatarInFirestore(String avatarName) {
-        String uid = mAuth.getCurrentUser().getUid();
-
-        db.collection("users").document(uid)
-                .update("profile", avatarName)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Avatar saved!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to save avatar", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void setupNavigation() {
-        ImageButton ibtnHome = findViewById(R.id.ibtnHome1);
-        ImageButton ibtnCalendar = findViewById(R.id.ibtnCalendar1);
-        ImageButton ibtnAnalytics = findViewById(R.id.ibtnAnalytics1);
-        ImageButton ibtnProfile = findViewById(R.id.ibtnProfile1);
-
-        ibtnHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, Home.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        ibtnCalendar.setOnClickListener(v -> {
-            startActivity(new Intent(this, Calendar.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        ibtnAnalytics.setOnClickListener(v -> {
-            startActivity(new Intent(this, Analysis.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
-
-        ibtnProfile.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileBadges.class));
-            overridePendingTransition(0, 0);
-            finish();
-        });
+        return view;
     }
 }

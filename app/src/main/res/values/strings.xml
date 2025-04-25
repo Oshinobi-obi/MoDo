@@ -36,14 +36,29 @@
 
     <!--activity_home.xml-->
     <string name="search">search</string>
-    <string name="username">Username</string>
+    <string name="username">, Username</string>
     <string name="Journey1">Let’s start your journey!</string>
-    <string name="Hello1">Hello, </string>
+    <string name="Hello1">Hello</string>
     <string name="Home1">Home</string>
     <string name="Calendar1">Calendar</string>
     <string name="Analytics1">Analytics</string>
     <string name="Profile1">Profile</string>
     <string name="AddTask1">Add Task</string>
+
+    <!-- Additional Strings for activity_home.xml -->
+    <string name="welcome_user">, %1$s!</string>
+    <string name="welcome_default">Welcome!</string>
+    <string name="user_data_not_found">User data not found</string>
+    <string name="load_user_failed">Failed to load user info</string>
+    <string name="task_added">Task added!</string>
+    <string name="task_save_error">Error saving task</string>
+    <string name="title_required">Title is required</string>
+    <string name="deadline">Deadline: %1$s</string>
+
+    <!--activity_analysis.xml-->
+    <string name="WEEKLY">WEEKLY</string>
+    <string name="MONTHLY">MONTHLY</string>
+    <string name="OVERALL">OVERALL</string>
 
     <!--Hardcode Strings Problem-->
 

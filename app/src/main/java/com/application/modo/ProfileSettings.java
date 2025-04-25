@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,11 +36,25 @@ public class ProfileSettings extends AppCompatActivity {
     private TextView tvTaskReminder2, tvBreakReminder2, tvEmail4;
     private Button btnEditPersonal, btnEditAccount, btnEditPrefs, btnSignOut;
 
+    private ImageView ivReturn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_settings);
 
+        // Return button logic
+        ivReturn = findViewById(R.id.ivReturn);
+        ivReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileSettings.this, Profile.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // Firebase and other setups
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -48,6 +63,7 @@ public class ProfileSettings extends AppCompatActivity {
         setupEditActions();
         setupNavigation();
     }
+
 
     private void initializeViews() {
         tvFirstName2 = findViewById(R.id.tvFirstName2);
@@ -284,9 +300,7 @@ public class ProfileSettings extends AppCompatActivity {
         taskReminderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         breakReminderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTaskReminder.setAdapter(taskReminderAdapter);
-        spinnerTaskReminder.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
         spinnerBreakReminder.setAdapter(breakReminderAdapter);
-        spinnerBreakReminder.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
 
         // Select saved values or show hint (position 0)
         String currentTaskReminder = tvTaskReminder2.getText().toString();
@@ -368,7 +382,7 @@ public class ProfileSettings extends AppCompatActivity {
         });
 
         ibtnAnalytics.setOnClickListener(v -> {
-            startActivity(new Intent(this, Analysis.class));
+            startActivity(new Intent(this, Analytics.class));
             overridePendingTransition(0, 0);
             finish();
         });
