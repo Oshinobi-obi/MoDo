@@ -51,14 +51,13 @@
     <string name="task_save_error">Error saving task</string>
     <string name="deadline">Deadline: %1$s</string>
 
-    <!--activity_analysis.xml-->
-
     <!--Hardcode Strings Problem-->
     <!--A-->
     <string name="AddDescription">Add Description</string>
     <string name="AddTask1">Add Task</string>
     <string name="AddTitle">Add Title</string>
     <string name="AlreadyHaveAnAccount1">Already have an account?</string>
+    <string name="ArrowBack">Arrow Back</string>
     <string name="AvatarName">Avatar Name</string>
     <string name="AvatarDescription">Avatar Description</string>
 
@@ -68,6 +67,7 @@
 
     <!--C-->
     <string name="CompletedDate">Completed Date</string>
+    <string name="CurrentTasks">Current Tasks</string>
 
     <!--D-->
     <string name="Deadline">Deadline</string>
@@ -78,18 +78,23 @@
     <string name="EditTask">Edit Task</string>
     <string name="EditLabel">Edit Label</string>
 
-    <!--L-->
+    <!--G-->
+    <string name="GetStarted">Get Started</string>
 
+    <!--L-->
     <string name="Label">Label</string>
     <string name="Labels">Labels</string>
     <string name="LastName">Last Name:</string>
 
+    <!--M-->
     <string name="MarkComplete">Mark as Complete</string>
+    <string name="Milestone">(Milestone: 500 pts)</string>
     <string name="MONTHLY">MONTHLY</string>
 
+    <!--N-->
     <string name="NotificationAlert">Notification Alert</string>
 
-
+    <!--O-->
     <string name="OVERALL">OVERALL</string>
 
     <!--P-->
@@ -98,28 +103,35 @@
     <string name="PointsObtained">(Points Obtained)</string>
     <string name="Preferences">Preferences</string>
     <string name="PriorityLevel">Priority Level</string>
+    <string name="Prioritize">Prioritize, organize, and conquer tasks effortlessly with Modo. Click the button below to learn how to use Modo.</string>
 
+    <!--R-->
     <string name="RemoveTask">Remove Task</string>
     <string name="Reschedule">Reschedule</string>
 
     <!--S-->
     <string name="Save">Save</string>
+    <string name="SeeAll">see all</string>
     <string name="StatusTitle">Status Title</string>
     <string name="StatusDescription">Status Description</string>
     <string name="StatusRequirements">Status Requirements</string>
     <string name="Suffix">Suffix:</string>
 
+    <!--T-->
     <string name="Time">Time</string>
     <string name="Title">Title</string>
     <string name="task_added">Task added!</string>
     <string name="TaskCompletedDate">Task Completed Date</string>
     <string name="TaskDescription">Task Description</string>
     <string name="TaskDuration">Task Duration</string>
+    <string name="TaskHistory">Task History</string>
     <string name="TaskReminder">Task Reminder:</string>
     <string name="TaskTitle">Task Title</string>
     <string name="title_required">Title is required</string>
 
+    <!--W-->
     <string name="WEEKLY">WEEKLY</string>
+    <string name="WhatIsModo">What is Modo?</string>
 
 
 
