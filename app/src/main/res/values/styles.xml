@@ -14,4 +14,7 @@
         <item name="colorAccent">#313037</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
+    <style name="SpinnerPopupLimitedHeight" parent="Widget.AppCompat.Spinner">
+        <item name="android:dropDownHeight">120dp</item>
+    </style>
 </resources>

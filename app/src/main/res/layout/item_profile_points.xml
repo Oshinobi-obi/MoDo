@@ -15,6 +15,7 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/merriweather"
         android:text="Task Title"
+        android:textColor="#3b3b3b"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +28,7 @@
         android:layout_marginStart="15dp"
         android:fontFamily="@font/merriweather"
         android:text="Task Completed Date"
+        android:textColor="#3b3b3b"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTaskTitle" />
 
@@ -38,6 +40,7 @@
         android:layout_marginBottom="15dp"
         android:fontFamily="@font/merriweather"
         android:text="(Points Obtained)"
+        android:textColor="#3b3b3b"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTaskCompletedDate" />
