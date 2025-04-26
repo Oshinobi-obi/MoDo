@@ -62,36 +62,24 @@
             </androidx.core.widget.NestedScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Spinner
-            android:id="@+id/spinnerSelector"
-            android:layout_width="197dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/calendars"
-            android:padding="12dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@android:layout/simple_dropdown_item_1line" />
-
-        <CalendarView
+        <DatePicker
             android:id="@+id/calendarView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/calendars"
+            android:layout_height="440dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/datepicker"
+            android:calendarViewShown="true"
+            android:theme="@style/DatePickerTheme"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerSelector" />
-
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTaskToday1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/poppins_bold"
             android:text="To do List"
             android:textSize="30sp"
@@ -105,7 +93,8 @@
             android:background="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="VisualLintBottomNav">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -121,7 +110,8 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Home1"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/homeinactive" />
+                    app:srcCompat="@drawable/homeinactive"
+                    tools:ignore="ImageContrastCheck" />
 
                 <ImageButton
                     android:id="@+id/ibtnCalendar1"
@@ -131,7 +121,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Calendar1"
                     android:scaleType="center"
-                    app:srcCompat="@drawable/calendarinactive" />
+                    app:srcCompat="@drawable/calendaractive" />
 
                 <View
                     android:layout_width="91dp"
@@ -145,7 +135,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Analytics1"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/analyticsactive" />
+                    app:srcCompat="@drawable/analyticsinactive" />
 
                 <ImageButton
                     android:id="@+id/ibtnProfile1"
@@ -155,7 +145,8 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Profile1"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/profileinactive" />
+                    app:srcCompat="@drawable/profileinactive"
+                    tools:ignore="ImageContrastCheck" />
             </LinearLayout>
         </com.google.android.material.bottomnavigation.BottomNavigationView>
 

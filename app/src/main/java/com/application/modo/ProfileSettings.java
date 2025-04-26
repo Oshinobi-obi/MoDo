@@ -126,7 +126,7 @@ public class ProfileSettings extends AppCompatActivity {
         EditText etLastName = view.findViewById(R.id.etLastName1);
         EditText etSuffix = view.findViewById(R.id.etSuffix1);
         EditText etBirthdate = view.findViewById(R.id.etBirthday);
-        Button btnDone = view.findViewById(R.id.btnDone1);
+        Button btnDone = view.findViewById(R.id.btnDone);
 
         etFirstName.setText(tvFirstName2.getText());
         etMiddleName.setText(tvMiddleName2.getText());
@@ -212,7 +212,7 @@ public class ProfileSettings extends AppCompatActivity {
         EditText etUsername = view.findViewById(R.id.etUsername5);
         EditText etEmail = view.findViewById(R.id.etEmail2);
         EditText etPassword = view.findViewById(R.id.etPassword3);
-        Button btnDone = view.findViewById(R.id.btnDone1);
+        Button btnDone = view.findViewById(R.id.btnDone);
 
         // Optional: Pre-fill existing values if you want
         etUsername.setText(tvUsername5.getText()); // You can fetch and fill the username
@@ -244,7 +244,7 @@ public class ProfileSettings extends AppCompatActivity {
 
         Spinner spinnerTaskReminder = view.findViewById(R.id.spinnerTaskReminder1);
         Spinner spinnerBreakReminder = view.findViewById(R.id.spinnerBreakReminder1);
-        Button btnDone = view.findViewById(R.id.btnDone1);
+        Button btnDone = view.findViewById(R.id.btnDone);
 
         // Add hint item to both spinners
         List<String> taskReminderList = new ArrayList<>();

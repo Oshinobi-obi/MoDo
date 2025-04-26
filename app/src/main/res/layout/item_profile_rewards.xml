@@ -14,7 +14,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/merriweather"
-        android:text="Avatar Name"
+        android:text="@string/AvatarName"
         android:textColor="#3b3b3b"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:fontFamily="@font/merriweather"
-        android:text="Avatar Description"
+        android:text="@string/AvatarDescription"
         android:textColor="#3b3b3b"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAvatarName" />

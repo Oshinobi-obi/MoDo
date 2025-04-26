@@ -4,7 +4,6 @@
     <string name="app_name">Modo</string>
 
     <!--activity_landing.xml-->
-    <string name="AlreadyHaveAnAccount1">Already have an account?</string>
     <string name="SignUpWithEmail2">sign up with email</string>
     <string name="Login1">Login</string>
     <string name="Login2">login</string>
@@ -43,23 +42,89 @@
     <string name="Calendar1">Calendar</string>
     <string name="Analytics1">Analytics</string>
     <string name="Profile1">Profile</string>
-    <string name="AddTask1">Add Task</string>
 
     <!-- Additional Strings for activity_home.xml -->
     <string name="welcome_user">, %1$s!</string>
     <string name="welcome_default">Welcome!</string>
     <string name="user_data_not_found">User data not found</string>
     <string name="load_user_failed">Failed to load user info</string>
-    <string name="task_added">Task added!</string>
     <string name="task_save_error">Error saving task</string>
-    <string name="title_required">Title is required</string>
     <string name="deadline">Deadline: %1$s</string>
 
     <!--activity_analysis.xml-->
-    <string name="WEEKLY">WEEKLY</string>
-    <string name="MONTHLY">MONTHLY</string>
-    <string name="OVERALL">OVERALL</string>
 
     <!--Hardcode Strings Problem-->
+    <!--A-->
+    <string name="AddDescription">Add Description</string>
+    <string name="AddTask1">Add Task</string>
+    <string name="AddTitle">Add Title</string>
+    <string name="AlreadyHaveAnAccount1">Already have an account?</string>
+    <string name="AvatarName">Avatar Name</string>
+    <string name="AvatarDescription">Avatar Description</string>
+
+    <!--B-->
+    <string name="Birthdate">Birthdate:</string>
+    <string name="BreakReminder">Break Reminder:</string>
+
+    <!--C-->
+    <string name="CompletedDate">Completed Date</string>
+
+    <!--D-->
+    <string name="Deadline">Deadline</string>
+    <string name="Description">Description</string>
+    <string name="Done">Done</string>
+
+    <!--E-->
+    <string name="EditTask">Edit Task</string>
+    <string name="EditLabel">Edit Label</string>
+
+    <!--L-->
+
+    <string name="Label">Label</string>
+    <string name="Labels">Labels</string>
+    <string name="LastName">Last Name:</string>
+
+    <string name="MarkComplete">Mark as Complete</string>
+    <string name="MONTHLY">MONTHLY</string>
+
+    <string name="NotificationAlert">Notification Alert</string>
+
+
+    <string name="OVERALL">OVERALL</string>
+
+    <!--P-->
+    <string name="periods">. . .</string>
+    <string name="PersonalDetails">Personal Details</string>
+    <string name="PointsObtained">(Points Obtained)</string>
+    <string name="Preferences">Preferences</string>
+    <string name="PriorityLevel">Priority Level</string>
+
+    <string name="RemoveTask">Remove Task</string>
+    <string name="Reschedule">Reschedule</string>
+
+    <!--S-->
+    <string name="Save">Save</string>
+    <string name="StatusTitle">Status Title</string>
+    <string name="StatusDescription">Status Description</string>
+    <string name="StatusRequirements">Status Requirements</string>
+    <string name="Suffix">Suffix:</string>
+
+    <string name="Time">Time</string>
+    <string name="Title">Title</string>
+    <string name="task_added">Task added!</string>
+    <string name="TaskCompletedDate">Task Completed Date</string>
+    <string name="TaskDescription">Task Description</string>
+    <string name="TaskDuration">Task Duration</string>
+    <string name="TaskReminder">Task Reminder:</string>
+    <string name="TaskTitle">Task Title</string>
+    <string name="title_required">Title is required</string>
+
+    <string name="WEEKLY">WEEKLY</string>
+
+
+
+
+
+
 
 </resources>

@@ -14,29 +14,29 @@
 
         <Button
             android:id="@+id/btnEditTask"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="48dp"
+            android:background="@drawable/edittask_top"
             android:fontFamily="@font/poppins"
-            android:text="Edit Task"
-            android:textSize="14sp"
-            android:background="@drawable/edittask_top"/>
+            android:text="@string/EditTask"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnEditLabel"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="48dp"
+            android:background="@drawable/edittask_middle"
             android:fontFamily="@font/poppins"
-            android:text="Edit Label"
-            android:textSize="14sp"
-            android:background="@drawable/edittask_middle"/>
+            android:text="@string/EditLabel"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnRemoveTask"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="48dp"
+            android:background="@drawable/edittask_bottom"
             android:fontFamily="@font/poppins"
-            android:text="Remove Task"
-            android:textSize="14sp"
-            android:background="@drawable/edittask_bottom"/>
+            android:text="@string/RemoveTask"
+            android:textSize="14sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
