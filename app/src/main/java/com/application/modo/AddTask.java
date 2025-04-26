@@ -6,8 +6,9 @@ public class AddTask {
     private String priority;
     private String label;
     private String deadline;
+    private String status; // ✨ Add this!
 
-    // Required for Firebase
+    // Required empty constructor for Firebase
     public AddTask() {}
 
     public AddTask(String title, String description, String priority, String label, String deadline) {
@@ -16,8 +17,10 @@ public class AddTask {
         this.priority = priority;
         this.label = label;
         this.deadline = deadline;
+        this.status = "Ongoing";
     }
 
+    // Getters
     public String getTitle() {
         return title;
     }
@@ -36,5 +39,9 @@ public class AddTask {
 
     public String getDeadline() {
         return deadline;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

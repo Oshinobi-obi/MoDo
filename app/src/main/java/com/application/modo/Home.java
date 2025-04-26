@@ -10,16 +10,19 @@ import android.widget.*;
 import android.app.AlertDialog;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.firestore.Query;
 import java.util.*;
 
 public class Home extends AppCompatActivity {
 
     private TextView tvUsername3, tvCurrentTaskTitle, tvCurrentTaskDescription, tvCurrentTaskDeadline;
+    private TextView tvTaskTitle1, tvTaskDescription1, tvTaskDeadline;
     private ImageView imgvPicture1;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -48,6 +51,11 @@ public class Home extends AppCompatActivity {
         tvCurrentTaskTitle = findViewById(R.id.tvCurrentTaskTitle1);
         tvCurrentTaskDescription = findViewById(R.id.tvCurrentTaskDescription1);
         tvCurrentTaskDeadline = findViewById(R.id.tvCurrentTaskDeadline1);
+        tvTaskTitle1 = findViewById(R.id.tvTaskTitle1);
+        tvTaskDescription1 = findViewById(R.id.tvTaskDescription1);
+        tvTaskDeadline = findViewById(R.id.tvTaskDeadline);
+
+        ConstraintLayout clCurrentTask1 = findViewById(R.id.clCurrentTask1);
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -68,6 +76,10 @@ public class Home extends AppCompatActivity {
 
                             int resId = avatarMap.getOrDefault(avatarName, R.drawable.default_avatar);
                             imgvPicture1.setImageResource(resId);
+
+                            fetchCurrentTask(uid);
+                            fetchCompletedTask(uid);
+
                         } else {
                             tvUsername3.setText(getString(R.string.welcome_default));
                             Toast.makeText(Home.this, getString(R.string.user_data_not_found), Toast.LENGTH_SHORT).show();
@@ -83,9 +95,61 @@ public class Home extends AppCompatActivity {
 
         fabAddTask1.setOnClickListener(v -> showAddTaskDialog());
 
+        clCurrentTask1.setOnClickListener(v -> showOngoingTaskDialog()); // 🔥 Added this
+
         findViewById(R.id.ibtnCalendar1).setOnClickListener(v -> startActivity(new Intent(this, Calendar.class)));
         findViewById(R.id.ibtnAnalytics1).setOnClickListener(v -> startActivity(new Intent(this, Analytics.class)));
         findViewById(R.id.ibtnProfile1).setOnClickListener(v -> startActivity(new Intent(this, Profile.class)));
+    }
+
+    private void fetchCurrentTask(String uid) {
+        db.collection("users").document(uid).collection("tasks")
+                .whereEqualTo("status", "Ongoing")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        AddTask task = queryDocumentSnapshots.getDocuments().get(0).toObject(AddTask.class);
+                        if (task != null) {
+                            tvCurrentTaskTitle.setText(task.getTitle());
+                            tvCurrentTaskDescription.setText(task.getDescription());
+                            tvCurrentTaskDeadline.setText(task.getDeadline());
+                        }
+                    } else {
+                        tvCurrentTaskTitle.setText("No Current Task");
+                        tvCurrentTaskDescription.setText("");
+                        tvCurrentTaskDeadline.setText("");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load current task", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void fetchCompletedTask(String uid) {
+        db.collection("users").document(uid).collection("tasks")
+                .whereEqualTo("status", "Completed")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        AddTask task = queryDocumentSnapshots.getDocuments().get(0).toObject(AddTask.class);
+                        if (task != null) {
+                            tvTaskTitle1.setText(task.getTitle());
+                            tvTaskDescription1.setText(task.getDescription());
+                            tvTaskDeadline.setText(task.getDeadline());
+                        }
+                    } else {
+                        tvTaskTitle1.setText("No Completed Task");
+                        tvTaskDescription1.setText("");
+                        tvTaskDeadline.setText("");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load completed task", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void showAddTaskDialog() {
@@ -105,25 +169,7 @@ public class Home extends AppCompatActivity {
         spnrPriority.setAdapter(getPriorityAdapter());
         spnrPriority.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
 
-        ArrayAdapter<String> labelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, List.of("Uncategorized")) {
-            @NonNull
-            @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                TextView tv = (TextView) super.getView(position, convertView, parent);
-                tv.setTextColor(Color.parseColor("#3b3b3b"));
-                tv.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.poppins));
-                return tv;
-            }
-
-            @NonNull
-            @Override
-            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
-                TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
-                tv.setTextColor(Color.parseColor("#3b3b3b"));
-                tv.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.poppins));
-                return tv;
-            }
-        };
+        ArrayAdapter<String> labelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, List.of("Uncategorized"));
         labelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnrLabel.setAdapter(labelAdapter);
         spnrLabel.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
@@ -142,14 +188,20 @@ public class Home extends AppCompatActivity {
 
             if (mAuth.getCurrentUser() != null) {
                 String uid = mAuth.getCurrentUser().getUid();
-                AddTask newTask = new AddTask(title, description, priority, label, selectedDeadline[0]);
+                Map<String, Object> taskData = new HashMap<>();
+                taskData.put("title", title);
+                taskData.put("description", description);
+                taskData.put("priority", priority);
+                taskData.put("label", label);
+                taskData.put("deadline", selectedDeadline[0]);
+                taskData.put("status", "Ongoing");
+                taskData.put("timestamp", Timestamp.now());
 
-                db.collection("users").document(uid).collection("tasks").add(newTask)
+                db.collection("users").document(uid).collection("tasks").add(taskData)
                         .addOnSuccessListener(ref -> {
                             Toast.makeText(this, getString(R.string.task_added), Toast.LENGTH_SHORT).show();
-                            tvCurrentTaskTitle.setText(title);
-                            tvCurrentTaskDescription.setText(description);
-                            tvCurrentTaskDeadline.setText(selectedDeadline[0]);
+                            fetchCurrentTask(uid);
+                            fetchCompletedTask(uid);
                             dialog.dismiss();
                         })
                         .addOnFailureListener(e -> Toast.makeText(this, getString(R.string.task_save_error), Toast.LENGTH_SHORT).show());
@@ -157,6 +209,61 @@ public class Home extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void showOngoingTaskDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_ongoingtask_view, null);
+        AlertDialog ongoingTaskDialog = new AlertDialog.Builder(this).setView(view).create();
+        if (ongoingTaskDialog.getWindow() != null)
+            ongoingTaskDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextView tvCTTaskTitle = view.findViewById(R.id.tvCTTaskTitle);
+        TextView tvCTTaskDescription = view.findViewById(R.id.tvCTTaskDescription);
+        TextView tvCTDeadlineDuration = view.findViewById(R.id.tvCTDeadlineDuration);
+        TextView tvCTLabel = view.findViewById(R.id.tvCTLabel);
+        Button btnTaskSettings = view.findViewById(R.id.btnTaskSettings);
+        Button btnDone = view.findViewById(R.id.btnDone);
+
+        tvCTTaskTitle.setText(tvCurrentTaskTitle.getText());
+        tvCTTaskDescription.setText(tvCurrentTaskDescription.getText());
+        tvCTDeadlineDuration.setText(tvCurrentTaskDeadline.getText());
+        tvCTLabel.setText("Uncategorized"); // Default for now
+
+        btnTaskSettings.setOnClickListener(v -> showTaskOptionsDialog());
+        btnDone.setOnClickListener(v -> {
+            Toast.makeText(this, "Task marked as completed!", Toast.LENGTH_SHORT).show();
+            ongoingTaskDialog.dismiss();
+        });
+
+        ongoingTaskDialog.show();
+    }
+
+    private void showTaskOptionsDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_taskoptions, null);
+        AlertDialog taskOptionsDialog = new AlertDialog.Builder(this).setView(view).create();
+        if (taskOptionsDialog.getWindow() != null)
+            taskOptionsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button btnEditTask = view.findViewById(R.id.btnEditTask);
+        Button btnEditLabel = view.findViewById(R.id.btnEditLabel);
+        Button btnRemoveTask = view.findViewById(R.id.btnRemoveTask);
+
+        btnEditTask.setOnClickListener(v -> {
+            Toast.makeText(this, "Edit Task clicked!", Toast.LENGTH_SHORT).show();
+            taskOptionsDialog.dismiss();
+        });
+
+        btnEditLabel.setOnClickListener(v -> {
+            Toast.makeText(this, "Edit Label clicked!", Toast.LENGTH_SHORT).show();
+            taskOptionsDialog.dismiss();
+        });
+
+        btnRemoveTask.setOnClickListener(v -> {
+            Toast.makeText(this, "Remove Task clicked!", Toast.LENGTH_SHORT).show();
+            taskOptionsDialog.dismiss();
+        });
+
+        taskOptionsDialog.show();
     }
 
     private void showDateTimePicker(Button btnDateTime, String[] selectedDeadline) {
@@ -169,50 +276,17 @@ public class Home extends AppCompatActivity {
         Button btnDone = view.findViewById(R.id.btnDone);
 
         List<String> timeOptions = new ArrayList<>();
-        timeOptions.add("1 hour");
-        timeOptions.add("2 hours");
-        timeOptions.add("3 hours");
-        for (int i = 4; i <= 12; i++) {
-            timeOptions.add(i + " hours");
+        for (int hour = 0; hour < 24; hour++) {
+            int displayHour = hour % 12;
+            if (displayHour == 0) displayHour = 12;
+            String period = (hour < 12) ? "AM" : "PM";
+            timeOptions.add(displayHour + ":00 " + period);
         }
 
-        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item_limited, timeOptions) {
-            @NonNull
-            @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                TextView tv = (TextView) super.getView(position, convertView, parent);
-                tv.setTextColor(Color.BLACK);
-                tv.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.poppins));
-                return tv;
-            }
-
-            @NonNull
-            @Override
-            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
-                TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
-                tv.setTextColor(Color.parseColor("#3b3b3b"));
-                tv.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.poppins));
-                return tv;
-            }
-        };
+        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item_limited, timeOptions);
         timeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_limited);
         timePicker.setAdapter(timeAdapter);
         timePicker.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
-
-        // Limit dropdown height so it only shows 3 items visible
-        timePicker.post(() -> {
-            try {
-                java.lang.reflect.Field popup = Spinner.class.getDeclaredField("mPopup");
-                popup.setAccessible(true);
-
-                Object popupWindow = popup.get(timePicker);
-                if (popupWindow instanceof android.widget.ListPopupWindow) {
-                    ((android.widget.ListPopupWindow) popupWindow).setHeight(400);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
 
         btnDone.setOnClickListener(v -> {
             int year = datePicker.getYear();
