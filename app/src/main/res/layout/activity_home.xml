@@ -238,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Completed Tasks"
+                        android:text="Task History"
                         android:textColor="#3b3b3b"
                         android:textSize="20sp"
                         android:textStyle="bold"
