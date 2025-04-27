@@ -124,7 +124,7 @@
     <string name="TaskCompletedDate">Task Completed Date</string>
     <string name="TaskDescription">Task Description</string>
     <string name="TaskDuration">Task Duration</string>
-    <string name="TaskHistory">Task History</string>
+    <string name="TaskHistory">Completed Tasks</string>
     <string name="TaskReminder">Task Reminder:</string>
     <string name="TaskTitle">Task Title</string>
     <string name="title_required">Title is required</string>

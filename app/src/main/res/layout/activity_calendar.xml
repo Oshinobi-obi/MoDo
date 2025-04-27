@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="#FFFFFF"
     tools:context=".Calendar">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +43,7 @@
                     android:id="@+id/constraintLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="33dp"
+                    android:padding="18dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -52,6 +53,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:layoutManager="LinearLayoutManager">
@@ -79,9 +81,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="18dp"
             android:fontFamily="@font/poppins_bold"
             android:text="To do List"
+            android:textColor="#3b3b3b"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/calendarView" />
@@ -121,7 +124,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Calendar1"
                     android:scaleType="center"
-                    app:srcCompat="@drawable/calendaractive" />
+                    app:srcCompat="@drawable/calendarinactive" />
 
                 <View
                     android:layout_width="91dp"
@@ -135,7 +138,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Analytics1"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/analyticsinactive" />
+                    app:srcCompat="@drawable/analyticsactive" />
 
                 <ImageButton
                     android:id="@+id/ibtnProfile1"

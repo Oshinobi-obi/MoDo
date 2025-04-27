@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#FFFFFF">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -107,8 +109,7 @@
                 android:contentDescription="@string/ArrowBack"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/arrow"
-                tools:srcCompat="@drawable/anotherarrow" />
+                app:srcCompat="@drawable/arrowleft"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
