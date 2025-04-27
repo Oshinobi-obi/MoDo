@@ -102,7 +102,7 @@ public class Login extends AppCompatActivity {
 
                                         checkmarkView.postDelayed(() -> {
                                             loadingOverlay.setVisibility(View.GONE);
-                                            startActivity(new Intent(this, Home.class));  // Change from Home.class to ActivityMain.class
+                                            startActivity(new Intent(this, ActivityMain.class));
                                             overridePendingTransition(0, 0);
                                             finish();
                                         }, 1000);

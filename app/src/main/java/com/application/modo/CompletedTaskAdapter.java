@@ -72,7 +72,7 @@ public class CompletedTaskAdapter extends RecyclerView.Adapter<CompletedTaskAdap
     }
 
     private void showCompletedTaskDialog(AddTask task) {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_completedtask_view, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_task_completed_view, null);
         AlertDialog dialog = new AlertDialog.Builder(context).setView(view).create();
         if (dialog.getWindow() != null) dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 

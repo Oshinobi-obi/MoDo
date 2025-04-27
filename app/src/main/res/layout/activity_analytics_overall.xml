@@ -65,7 +65,7 @@
                     android:layout_width="180dp"
                     android:layout_height="90dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/important"
+                    android:background="@drawable/home_important"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/overallBarChart">
 
@@ -100,7 +100,7 @@
                     android:layout_width="180dp"
                     android:layout_height="90dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/important"
+                    android:background="@drawable/home_important"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/overallBarChart">
 

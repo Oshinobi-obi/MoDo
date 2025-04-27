@@ -554,7 +554,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Calendar1"
                     android:scaleType="center"
-                    app:srcCompat="@drawable/calendaractive" />
+                    app:srcCompat="@drawable/calendarinactive" />
 
                 <View
                     android:layout_width="91dp"
@@ -568,7 +568,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:contentDescription="@string/Analytics1"
                     android:scaleType="centerInside"
-                    app:srcCompat="@drawable/analyticsactive" />
+                    app:srcCompat="@drawable/analyticsinactive" />
 
                 <ImageButton
                     android:id="@+id/ibtnProfile1"

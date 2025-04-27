@@ -52,7 +52,7 @@
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/monthlyBarChart"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp"
+                    android:layout_height="300dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/settingschild"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
                     android:layout_width="180dp"
                     android:layout_height="120dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/important"
+                    android:background="@drawable/home_important"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/monthlyBarChart">
 
@@ -112,7 +112,7 @@
                     android:layout_width="180dp"
                     android:layout_height="120dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/important"
+                    android:background="@drawable/home_important"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/monthlyBarChart">
 

@@ -72,7 +72,7 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvTaskList"
+                android:id="@+id/rvMissedTaskList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/poppins"
-                android:text="Current Tasks"
+                android:text="@string/TaskHistory"
                 android:textColor="#FFFFFF"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -100,16 +100,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/ivReturnCurrentTask"
+                android:id="@+id/ivReturnMissedTask"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:clickable="true"
-                android:contentDescription="Arrow Back"
+                android:contentDescription="@string/ArrowBack"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/arrowleft" />
+                app:srcCompat="@drawable/arrowleft"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

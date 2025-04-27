@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +22,9 @@ public class ProfileRewards extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_profile_rewards, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_profile_rewards, container, false);
 
         rvProfileRewards = view.findViewById(R.id.rvProfileRewards);
         rvProfileRewards.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -47,8 +40,9 @@ public class ProfileRewards extends Fragment {
         rewardList.add(new ProfileRewardsItem("Rabbit", "Fast and clever jumper", "(Milestone: 550 pts)"));
         rewardList.add(new ProfileRewardsItem("Sealion", "Playful, bold sea explorer", "(Milestone: 600 pts)"));
 
-
         adapter = new ProfileRewardsAdapter(rewardList);
         rvProfileRewards.setAdapter(adapter);
+
+        return view;
     }
 }

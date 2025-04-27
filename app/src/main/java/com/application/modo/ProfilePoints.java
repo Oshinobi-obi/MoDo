@@ -16,13 +16,11 @@ public class ProfilePoints extends Fragment {
 
     private RecyclerView rvProfilePoints;
     private ProfilePointsAdapter adapter;
-    private List<ProfilePointsItem> pointList;
 
     public ProfilePoints() {
         // Required empty public constructor
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,7 +29,7 @@ public class ProfilePoints extends Fragment {
         rvProfilePoints = view.findViewById(R.id.rvProfilePoints);
         rvProfilePoints.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        pointList = new ArrayList<>();
+        List<ProfilePointsItem> pointList = new ArrayList<>();
         // Sample data
         pointList.add(new ProfilePointsItem("Task Title 1", "01/01/2025", "+10 points"));
         pointList.add(new ProfilePointsItem("Task Title 2", "03/10/2025", "+5 points"));

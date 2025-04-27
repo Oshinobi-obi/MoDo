@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="#FFFFFF"
-    tools:context=".Calendar">
+    tools:context=".CalendarFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -25,7 +25,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTaskToday1">
@@ -83,94 +83,11 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="18dp"
             android:fontFamily="@font/poppins_bold"
-            android:text="To do List"
+            android:text="@string/TodoList"
             android:textColor="#3b3b3b"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/calendarView" />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNav"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:background="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="VisualLintBottomNav">
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/ibtnHome1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Home1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/homeinactive"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/ibtnCalendar1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Calendar1"
-                    android:scaleType="center"
-                    app:srcCompat="@drawable/calendarinactive" />
-
-                <View
-                    android:layout_width="91dp"
-                    android:layout_height="match_parent" />
-
-                <ImageButton
-                    android:id="@+id/ibtnAnalytics1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Analytics1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/analyticsactive" />
-
-                <ImageButton
-                    android:id="@+id/ibtnProfile1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Profile1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/profileinactive"
-                    tools:ignore="ImageContrastCheck" />
-            </LinearLayout>
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddTask1"
-            android:layout_width="101dp"
-            android:layout_height="101dp"
-            android:clickable="true"
-            android:contentDescription="@string/AddTask1"
-            android:translationY="-20dp"
-            app:backgroundTint="#313037"
-            app:fabCustomSize="101dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:maxImageSize="40dp"
-            app:shapeAppearance="@style/CircularShape"
-            app:srcCompat="@android:drawable/ic_input_add"
-            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -48,8 +48,7 @@ public class ProfileSettings extends AppCompatActivity {
         ivReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileSettings.this, Profile.class);
-                startActivity(intent);
+                Intent intent = new Intent(ProfileSettings.this, ProfileFragment.class);
                 finish();
             }
         });
@@ -370,7 +369,7 @@ public class ProfileSettings extends AppCompatActivity {
         ImageButton ibtnProfile = findViewById(R.id.ibtnProfile1);
 
         ibtnHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, Home.class));
+            startActivity(new Intent(this, HomeFragment.class));
             overridePendingTransition(0, 0);
             finish();
         });
@@ -382,7 +381,7 @@ public class ProfileSettings extends AppCompatActivity {
         });
 
         ibtnAnalytics.setOnClickListener(v -> {
-            startActivity(new Intent(this, Analytics.class));
+            startActivity(new Intent(this, AnalyticsFragment.class));
             overridePendingTransition(0, 0);
             finish();
         });

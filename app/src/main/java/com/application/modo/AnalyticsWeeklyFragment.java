@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.graphics.Color;
 import androidx.fragment.app.Fragment;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -23,13 +25,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-public class AnalyticsOverall extends Fragment {
+public class AnalyticsWeeklyFragment extends Fragment {
 
-    public AnalyticsOverall() {}
+    public AnalyticsWeeklyFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_analytics_overall, container, false);
+        View view = inflater.inflate(R.layout.activity_analytics_weekly, container, false);
 
         setupBarChart(view);
         setupPieChart(view);
@@ -39,7 +41,7 @@ public class AnalyticsOverall extends Fragment {
     }
 
     private void setupBarChart(View view) {
-        BarChart barChart = view.findViewById(R.id.overallBarChart);
+        BarChart barChart = view.findViewById(R.id.weeklyBarChart);
         barChart.setTouchEnabled(false);
         barChart.setDragEnabled(false);
         barChart.setScaleEnabled(false);
@@ -62,23 +64,25 @@ public class AnalyticsOverall extends Fragment {
         BarDataSet completeTaskDataSet = new BarDataSet(completeTaskEntries, "Complete Task");
         completeTaskDataSet.setColor(Color.rgb(49, 48, 55));
         completeTaskDataSet.setValueTextColor(Color.BLACK);
-        completeTaskDataSet.setValueTextSize(16f);
+        completeTaskDataSet.setValueTextSize(12f);
         completeTaskDataSet.setValueFormatter(new IntValueFormatter());
 
         BarDataSet incompleteTaskDataSet = new BarDataSet(incompleteTaskEntries, "Incomplete Task");
         incompleteTaskDataSet.setColor(Color.rgb(147, 144, 174));
         incompleteTaskDataSet.setValueTextColor(Color.BLACK);
-        incompleteTaskDataSet.setValueTextSize(16f);
+        incompleteTaskDataSet.setValueTextSize(12f);
         incompleteTaskDataSet.setValueFormatter(new IntValueFormatter());
 
-        float groupSpace = 0.2f, barSpace = 0.05f, barWidth = 0.35f;
+        float groupSpace = 0.25f;
+        float barSpace = 0.05f;
+        float barWidth = 0.35f;
         BarData data = new BarData(completeTaskDataSet, incompleteTaskDataSet);
         data.setBarWidth(barWidth);
 
         barChart.setData(data);
+        barChart.getXAxis().setAxisMinimum(0f);
+        barChart.getXAxis().setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 7);
         barChart.groupBars(0f, groupSpace, barSpace);
-        barChart.getDescription().setEnabled(false);
-        barChart.invalidate();
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -86,24 +90,29 @@ public class AnalyticsOverall extends Fragment {
         xAxis.setGranularityEnabled(true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setTextColor(Color.BLACK);
-        xAxis.setTextSize(16f);
+        xAxis.setTextSize(12f);
         xAxis.setDrawGridLines(false);
-        xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 7);
-        xAxis.setValueFormatter(new DayValueFormatter());
+        xAxis.setValueFormatter(new Last7DaysFormatter());
+
+        barChart.getAxisLeft().setTextColor(Color.BLACK);
+        barChart.getAxisRight().setEnabled(false);
 
         Legend legend = barChart.getLegend();
         legend.setEnabled(true);
         legend.setTextColor(Color.BLACK);
-        legend.setTextSize(16f);
+        legend.setTextSize(14f);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
 
+        barChart.getDescription().setEnabled(false);
+        barChart.setExtraOffsets(10, 10, 10, 10);
+
         barChart.animateY(1000);
+        barChart.invalidate();
     }
 
     private void setupPieChart(View view) {
-        PieChart pieChart = view.findViewById(R.id.overallPieChart);
+        PieChart pieChart = view.findViewById(R.id.weeklyPieChart);
 
         List<PieEntry> pieEntries = List.of(
                 new PieEntry(30f, "High"),
@@ -125,8 +134,8 @@ public class AnalyticsOverall extends Fragment {
         pieChart.getDescription().setEnabled(false);
         pieChart.setEntryLabelColor(Color.BLACK);
         pieChart.setEntryLabelTextSize(12f);
-        pieChart.animateY(1000);
-        pieChart.invalidate();
+
+        pieChart.setMinOffset(10f);
 
         Legend legend = pieChart.getLegend();
         legend.setTextColor(Color.BLACK);
@@ -134,10 +143,13 @@ public class AnalyticsOverall extends Fragment {
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legend.setXEntrySpace(20f);
+
+        pieChart.animateY(1000);
+        pieChart.invalidate();
     }
 
     private void setupLineChart(View view) {
-        LineChart lineChart = view.findViewById(R.id.overallLineChart);
+        LineChart lineChart = view.findViewById(R.id.weeklyLineChart);
 
         List<Entry> lineEntries = List.of(
                 new Entry(0f, 2f), new Entry(1f, 4f),
@@ -171,13 +183,13 @@ public class AnalyticsOverall extends Fragment {
         xAxis.setDrawGridLines(false);
         xAxis.setAxisMinimum(-0.5f);
         xAxis.setAxisMaximum(6.5f);
-        xAxis.setValueFormatter(new DayValueFormatter());
+        xAxis.setValueFormatter(new Last7DaysFormatter());
 
         lineChart.animateY(1000);
         lineChart.invalidate();
     }
 
-    // Helper formatters
+    // Formatter for integer bar values
     private static class IntValueFormatter extends ValueFormatter {
         @Override
         public String getFormattedValue(float value) {
@@ -185,6 +197,7 @@ public class AnalyticsOverall extends Fragment {
         }
     }
 
+    // Formatter for percentage in pie chart
     private static class PercentValueFormatter extends ValueFormatter {
         @Override
         public String getFormattedValue(float value) {
@@ -192,17 +205,37 @@ public class AnalyticsOverall extends Fragment {
         }
     }
 
-    private static class DayValueFormatter extends ValueFormatter {
-        private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    // Formatter for Last 7 Days
+    private static class Last7DaysFormatter extends ValueFormatter {
+        private final String[] last7Days;
+
+        public Last7DaysFormatter() {
+            last7Days = generateLast7Days();
+        }
 
         @Override
         public String getFormattedValue(float value) {
             int index = (int) value;
-            if (index >= 0 && index < days.length) {
-                return days[index];
+            if (index >= 0 && index < last7Days.length) {
+                return last7Days[index];
             } else {
                 return "";
             }
+        }
+
+        private String[] generateLast7Days() {
+            String[] days = new String[7];
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
+            dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Manila")); // 📍 Force PH time!
+
+            Calendar calendar = Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Manila"));
+            calendar.add(Calendar.DAY_OF_YEAR, -6); // Go back 6 days
+
+            for (int i = 0; i < 7; i++) {
+                days[i] = dateFormat.format(calendar.getTime());
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
+            }
+            return days;
         }
     }
 }

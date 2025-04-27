@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -14,28 +15,28 @@
         android:theme="@style/Theme.Modo"
         tools:targetApi="31">
 
-        <!-- Other activities -->
-        <activity android:name=".Home" android:exported="false" />
-        <activity android:name=".Profile" android:exported="false" />
+        <!-- Activities -->
+        <activity android:name=".ActivityMain" android:exported="false" />
+        <activity android:name=".AddTask" android:exported="false" />
+        <activity android:name=".HomeFragment" android:exported="false" />
+        <activity android:name=".ProfileFragment" android:exported="false" />
         <activity android:name=".ProfileSettings" android:exported="false" />
-        <activity android:name=".Analytics" android:exported="false" />
-        <activity android:name=".Calendar" android:exported="false" />
+        <activity android:name=".AnalyticsFragment" android:exported="false" />
+        <activity android:name=".CalendarFragment" android:exported="false" />
         <activity android:name=".SignUp2nd" android:exported="false" />
         <activity android:name=".SignUp1st" android:exported="false" />
         <activity android:name=".ForgotPassword" android:exported="false" />
-        <activity android:name=".HomeCurrentTask" android:exported="false"/>
-        <activity android:name=".HomeCompletedTask" android:exported="false"/>
+        <activity android:name=".HomeCurrentTask" android:exported="false" />
+        <activity android:name=".HomeCompletedTask" android:exported="false" />
         <activity android:name=".Login" android:exported="false" />
 
-        <!-- Landing page (entry point) -->
+        <!-- Entry point -->
         <activity android:name=".Landing" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Start the ActivityMain activity after login -->
 
         <meta-data
             android:name="preloaded_fonts"

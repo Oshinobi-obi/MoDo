@@ -84,7 +84,7 @@ public class Landing extends AppCompatActivity {
 
     private void checkSession() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            Intent intent = new Intent(Landing.this, Home.class);
+            Intent intent = new Intent(Landing.this, ActivityMain.class); // ✅ Fixed: launch ActivityMain, not HomeFragment
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             overridePendingTransition(0, 0);

@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.graphics.Color;
 import androidx.fragment.app.Fragment;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -23,9 +27,9 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-public class AnalyticsMonthly extends Fragment {
+public class AnalyticsMonthlyFragment extends Fragment {
 
-    public AnalyticsMonthly() {}
+    public AnalyticsMonthlyFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,45 +62,56 @@ public class AnalyticsMonthly extends Fragment {
         BarDataSet completeTaskDataSet = new BarDataSet(completeTaskEntries, "Complete Task");
         completeTaskDataSet.setColor(Color.rgb(49, 48, 55));
         completeTaskDataSet.setValueTextColor(Color.BLACK);
-        completeTaskDataSet.setValueTextSize(16f);
+        completeTaskDataSet.setValueTextSize(12f);
         completeTaskDataSet.setValueFormatter(new IntValueFormatter());
 
         BarDataSet incompleteTaskDataSet = new BarDataSet(incompleteTaskEntries, "Incomplete Task");
         incompleteTaskDataSet.setColor(Color.rgb(147, 144, 174));
         incompleteTaskDataSet.setValueTextColor(Color.BLACK);
-        incompleteTaskDataSet.setValueTextSize(16f);
+        incompleteTaskDataSet.setValueTextSize(12f);
         incompleteTaskDataSet.setValueFormatter(new IntValueFormatter());
 
-        float groupSpace = 0.2f, barSpace = 0.05f, barWidth = 0.35f;
+        float groupSpace = 0.25f;
+        float barSpace = 0.05f;
+        float barWidth = 0.35f;
         BarData data = new BarData(completeTaskDataSet, incompleteTaskDataSet);
         data.setBarWidth(barWidth);
 
         barChart.setData(data);
-        barChart.groupBars(0f, groupSpace, barSpace);
-        barChart.getDescription().setEnabled(false);
-        barChart.invalidate();
 
+        // 📍 Axis adjustments for breathing space
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setTextColor(Color.BLACK);
-        xAxis.setTextSize(16f);
+        xAxis.setTextSize(12f);
         xAxis.setDrawGridLines(false);
-        xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 4);
-        xAxis.setValueFormatter(new WeekValueFormatter());
+
+        barChart.getXAxis().setAxisMinimum(-0.5f); // 📍 Give space at start
+        barChart.getXAxis().setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 4 + 0.5f); // 📍 Give space at end
+        barChart.groupBars(0f, groupSpace, barSpace);
+
+        xAxis.setLabelRotationAngle(-15f); // 📍 Rotate labels a bit for space
+        xAxis.setValueFormatter(new WeekValueFormatter()); // 📍 Format weeks like "Apr 01 - Apr 07"
+
+        barChart.getAxisLeft().setTextColor(Color.BLACK);
+        barChart.getAxisRight().setEnabled(false);
 
         Legend legend = barChart.getLegend();
         legend.setEnabled(true);
         legend.setTextColor(Color.BLACK);
-        legend.setTextSize(16f);
+        legend.setTextSize(14f);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
 
+        barChart.getDescription().setEnabled(false);
+        barChart.setExtraOffsets(10, 10, 10, 10); // 📍 Prevent cut-offs
         barChart.animateY(1000);
+        barChart.invalidate();
     }
+
 
     private void setupPieChart(View view) {
         PieChart pieChart = view.findViewById(R.id.monthlyPieChart);
@@ -171,7 +186,7 @@ public class AnalyticsMonthly extends Fragment {
         lineChart.invalidate();
     }
 
-    // Helper formatters
+    // Formatter Classes
     private static class IntValueFormatter extends ValueFormatter {
         @Override
         public String getFormattedValue(float value) {
@@ -187,15 +202,47 @@ public class AnalyticsMonthly extends Fragment {
     }
 
     private static class WeekValueFormatter extends ValueFormatter {
+        private final String[] weeks;
+
+        public WeekValueFormatter() {
+            weeks = generateWeeks();
+        }
+
         @Override
         public String getFormattedValue(float value) {
-            switch ((int) value) {
-                case 0: return "Week 1";
-                case 1: return "Week 2";
-                case 2: return "Week 3";
-                case 3: return "Week 4";
-                default: return "";
+            int index = (int) value;
+            if (index >= 0 && index < weeks.length) {
+                return weeks[index];
+            } else {
+                return "";
             }
+        }
+
+        private String[] generateWeeks() {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+            calendar.set(Calendar.DAY_OF_MONTH, 1); // start at 1st of month
+
+            String[] result = new String[4];
+
+            for (int i = 0; i < 4; i++) {
+                Calendar startOfWeek = (Calendar) calendar.clone();
+                startOfWeek.add(Calendar.DAY_OF_MONTH, i * 7);
+
+                Calendar endOfWeek = (Calendar) startOfWeek.clone();
+                endOfWeek.add(Calendar.DAY_OF_MONTH, 6);
+
+                Calendar today = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+                if (endOfWeek.after(today)) {
+                    endOfWeek = today;
+                }
+
+                result[i] = dateFormat.format(startOfWeek.getTime()) + "-" + dateFormat.format(endOfWeek.getTime());
+            }
+
+            return result;
         }
     }
 }

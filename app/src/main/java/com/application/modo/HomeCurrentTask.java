@@ -51,7 +51,6 @@ public class HomeCurrentTask extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.ivReturnCurrentTask).setOnClickListener(v -> {
-            startActivity(new Intent(HomeCurrentTask.this, Home.class));
             finish();
         });
 
@@ -274,7 +273,6 @@ public class HomeCurrentTask extends AppCompatActivity {
 
         Button btnEditTask = view.findViewById(R.id.btnEditTask);
         Button btnEditLabel = view.findViewById(R.id.btnEditLabel);
-        Button btnRemoveTask = view.findViewById(R.id.btnRemoveTask);
 
         btnEditTask.setOnClickListener(v -> {
             optionsDialog.dismiss();
@@ -283,11 +281,6 @@ public class HomeCurrentTask extends AppCompatActivity {
 
         btnEditLabel.setOnClickListener(v -> {
             Toast.makeText(this, "Edit Label clicked!", Toast.LENGTH_SHORT).show();
-            optionsDialog.dismiss();
-        });
-
-        btnRemoveTask.setOnClickListener(v -> {
-            Toast.makeText(this, "Remove Task clicked!", Toast.LENGTH_SHORT).show();
             optionsDialog.dismiss();
         });
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Fragment container -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="100dp" />
+
+    <!-- Floating Action Button -->
+
+
+    <!-- Custom Bottom Navigation Layout -->
+
+    <LinearLayout
+        android:id="@+id/custom_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/ibtnHome1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="#FFFFFF"
+            android:contentDescription="@string/Home1"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/homeinactive" />
+
+        <ImageButton
+            android:id="@+id/ibtnCalendar1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="#FFFFFF"
+            android:contentDescription="@string/Calendar1"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/calendaractive" />
+
+        <View
+            android:layout_width="91dp"
+            android:layout_height="match_parent" />
+
+        <ImageButton
+            android:id="@+id/ibtnAnalytics1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="#FFFFFF"
+            android:contentDescription="@string/Analytics1"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/analyticsactive" />
+
+        <ImageButton
+            android:id="@+id/ibtnProfile1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="#FFFFFF"
+            android:contentDescription="@string/Profile1"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/profileinactive" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddTask1"
+        android:layout_width="101dp"
+        android:layout_height="101dp"
+        android:clickable="true"
+        android:contentDescription="@string/AddTask1"
+        android:translationY="-20dp"
+        app:backgroundTint="#313037"
+        app:fabCustomSize="101dp"
+        app:layout_anchor="@+id/custom_bottom_nav"
+        app:layout_anchorGravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:maxImageSize="40dp"
+        app:shapeAppearance="@style/CircularShape"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

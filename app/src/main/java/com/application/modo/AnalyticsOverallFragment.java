@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.graphics.Color;
+import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import java.util.ArrayList;
 import java.util.List;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,24 +24,81 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-public class AnalyticsWeekly extends Fragment {
+public class AnalyticsOverallFragment extends Fragment {
 
-    public AnalyticsWeekly() {}
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private TextView tvTotalTaskAmount1;
+    private TextView tvOverallCompletedTask1;
+    private PieChart pieChart;
+
+    public AnalyticsOverallFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_analytics_weekly, container, false);
+        View view = inflater.inflate(R.layout.activity_analytics_overall, container, false);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        tvTotalTaskAmount1 = view.findViewById(R.id.tvTotalTaskAmount1);
+        tvOverallCompletedTask1 = view.findViewById(R.id.tvOverallCompletedTask1);
+        pieChart = view.findViewById(R.id.overallPieChart);
 
         setupBarChart(view);
-        setupPieChart(view);
         setupLineChart(view);
+        fetchTaskStatistics();
 
         return view;
     }
 
+    private void fetchTaskStatistics() {
+        if (mAuth.getCurrentUser() == null) return;
+
+        String uid = mAuth.getCurrentUser().getUid();
+        db.collection("users").document(uid).collection("tasks")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int totalTasks = 0;
+                    int completedTasks = 0;
+                    int highCount = 0, mediumCount = 0, lowCount = 0;
+
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        totalTasks++;
+
+                        String status = doc.getString("status");
+                        if (status != null && status.equalsIgnoreCase("Completed")) {
+                            completedTasks++;
+                        }
+
+                        String priority = doc.getString("priority");
+                        if (priority != null) {
+                            switch (priority) {
+                                case "High": highCount++; break;
+                                case "Medium": mediumCount++; break;
+                                case "Low": lowCount++; break;
+                            }
+                        }
+                    }
+
+                    tvTotalTaskAmount1.setText(String.valueOf(totalTasks));
+                    tvOverallCompletedTask1.setText(String.valueOf(completedTasks));
+
+                    setupPieChart(highCount, mediumCount, lowCount);
+                })
+                .addOnFailureListener(e -> {
+                    tvTotalTaskAmount1.setText("0");
+                    tvOverallCompletedTask1.setText("0");
+                    setupPieChart(0, 0, 0);
+                });
+    }
+
     private void setupBarChart(View view) {
-        BarChart barChart = view.findViewById(R.id.weeklyBarChart);
+        BarChart barChart = view.findViewById(R.id.overallBarChart);
         barChart.setTouchEnabled(false);
         barChart.setDragEnabled(false);
         barChart.setScaleEnabled(false);
@@ -62,23 +121,23 @@ public class AnalyticsWeekly extends Fragment {
         BarDataSet completeTaskDataSet = new BarDataSet(completeTaskEntries, "Complete Task");
         completeTaskDataSet.setColor(Color.rgb(49, 48, 55));
         completeTaskDataSet.setValueTextColor(Color.BLACK);
-        completeTaskDataSet.setValueTextSize(16f);
+        completeTaskDataSet.setValueTextSize(12f);
         completeTaskDataSet.setValueFormatter(new IntValueFormatter());
 
         BarDataSet incompleteTaskDataSet = new BarDataSet(incompleteTaskEntries, "Incomplete Task");
         incompleteTaskDataSet.setColor(Color.rgb(147, 144, 174));
         incompleteTaskDataSet.setValueTextColor(Color.BLACK);
-        incompleteTaskDataSet.setValueTextSize(16f);
+        incompleteTaskDataSet.setValueTextSize(12f);
         incompleteTaskDataSet.setValueFormatter(new IntValueFormatter());
 
-        float groupSpace = 0.2f, barSpace = 0.05f, barWidth = 0.35f;
+        float groupSpace = 0.25f, barSpace = 0.05f, barWidth = 0.35f;
         BarData data = new BarData(completeTaskDataSet, incompleteTaskDataSet);
         data.setBarWidth(barWidth);
 
         barChart.setData(data);
+        barChart.getXAxis().setAxisMinimum(0f);
+        barChart.getXAxis().setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 7);
         barChart.groupBars(0f, groupSpace, barSpace);
-        barChart.getDescription().setEnabled(false);
-        barChart.invalidate();
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -86,35 +145,36 @@ public class AnalyticsWeekly extends Fragment {
         xAxis.setGranularityEnabled(true);
         xAxis.setCenterAxisLabels(true);
         xAxis.setTextColor(Color.BLACK);
-        xAxis.setTextSize(16f);
+        xAxis.setTextSize(12f);
         xAxis.setDrawGridLines(false);
-        xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 7);
         xAxis.setValueFormatter(new DayValueFormatter());
+
+        barChart.getAxisLeft().setTextColor(Color.BLACK);
+        barChart.getAxisRight().setEnabled(false);
 
         Legend legend = barChart.getLegend();
         legend.setEnabled(true);
         legend.setTextColor(Color.BLACK);
-        legend.setTextSize(16f);
+        legend.setTextSize(14f);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
 
+        barChart.getDescription().setEnabled(false);
+        barChart.setExtraOffsets(10, 10, 10, 10);
         barChart.animateY(1000);
+        barChart.invalidate();
     }
 
-    private void setupPieChart(View view) {
-        PieChart pieChart = view.findViewById(R.id.weeklyPieChart);
-
-        List<PieEntry> pieEntries = List.of(
-                new PieEntry(30f, "High"),
-                new PieEntry(33f, "Medium"),
-                new PieEntry(37f, "Low")
-        );
+    private void setupPieChart(int high, int medium, int low) {
+        List<PieEntry> pieEntries = new ArrayList<>();
+        if (high > 0) pieEntries.add(new PieEntry(high, "High"));
+        if (medium > 0) pieEntries.add(new PieEntry(medium, "Medium"));
+        if (low > 0) pieEntries.add(new PieEntry(low, "Low"));
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "");
         dataSet.setColors(Color.rgb(49, 48, 55), Color.rgb(147, 144, 174), Color.rgb(194, 191, 221));
         dataSet.setValueTextColor(Color.WHITE);
-        dataSet.setValueTextSize(16f);
+        dataSet.setValueTextSize(12f);
         dataSet.setValueFormatter(new PercentValueFormatter());
 
         PieData pieData = new PieData(dataSet);
@@ -124,20 +184,23 @@ public class AnalyticsWeekly extends Fragment {
         pieChart.setTouchEnabled(false);
         pieChart.getDescription().setEnabled(false);
         pieChart.setEntryLabelColor(Color.BLACK);
-        pieChart.setEntryLabelTextSize(12f);
-        pieChart.animateY(1000);
-        pieChart.invalidate();
+        pieChart.setEntryLabelTextSize(10f);
+
+        pieChart.setMinOffset(10f);
 
         Legend legend = pieChart.getLegend();
         legend.setTextColor(Color.BLACK);
-        legend.setTextSize(16f);
+        legend.setTextSize(14f);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legend.setXEntrySpace(20f);
+
+        pieChart.animateY(1000);
+        pieChart.invalidate();
     }
 
     private void setupLineChart(View view) {
-        LineChart lineChart = view.findViewById(R.id.weeklyLineChart);
+        LineChart lineChart = view.findViewById(R.id.overallLineChart);
 
         List<Entry> lineEntries = List.of(
                 new Entry(0f, 2f), new Entry(1f, 4f),
@@ -177,7 +240,6 @@ public class AnalyticsWeekly extends Fragment {
         lineChart.invalidate();
     }
 
-    // Helper formatters
     private static class IntValueFormatter extends ValueFormatter {
         @Override
         public String getFormattedValue(float value) {
@@ -193,7 +255,7 @@ public class AnalyticsWeekly extends Fragment {
     }
 
     private static class DayValueFormatter extends ValueFormatter {
-        private final String[] days = {"Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"};
+        private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
         @Override
         public String getFormattedValue(float value) {

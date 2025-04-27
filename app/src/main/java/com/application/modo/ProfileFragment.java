@@ -1,56 +1,60 @@
 package com.application.modo;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class Profile extends AppCompatActivity {
+public class ProfileFragment extends Fragment {
 
-    Button btnBadges, btnPoints, btnRewards, btnSettings;
-    TextView tvUsername;
-    ImageView imgvPicture;
-
+    private Button btnBadges, btnPoints, btnRewards, btnSettings;
+    private TextView tvUsername;
+    private ImageView imgvPicture;
     private Dialog avatarDialog;
     private String selectedAvatarName = "default_avatar";
-    private String[] avatarNames = {
+
+    private final String[] avatarNames = {
             "bear", "cat", "chicken", "dog", "gorilla", "owl", "panda", "rabbit", "sealion"
     };
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
+    public ProfileFragment() {}
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // UI
-        btnBadges = findViewById(R.id.btnBadges);
-        btnPoints = findViewById(R.id.btnPoints);
-        btnRewards = findViewById(R.id.btnRewards);
-        btnSettings = findViewById(R.id.btnSettings);
-        tvUsername = findViewById(R.id.tvUsername);
-        imgvPicture = findViewById(R.id.imgvPicture);
-
+        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        // Find Views
+        btnBadges = view.findViewById(R.id.btnBadges);
+        btnPoints = view.findViewById(R.id.btnPoints);
+        btnRewards = view.findViewById(R.id.btnRewards);
+        btnSettings = view.findViewById(R.id.btnSettings);
+        tvUsername = view.findViewById(R.id.tvUsername);
+        imgvPicture = view.findViewById(R.id.imgvPicture);
 
         // Load user info
         loadUserInfo();
 
-        // Default fragment
+        // Default fragment inside profile
         loadFragment(new ProfileBadges());
         updateButtonStyles(btnBadges);
 
+        // Button click events
         btnBadges.setOnClickListener(v -> {
             loadFragment(new ProfileBadges());
             updateButtonStyles(btnBadges);
@@ -67,15 +71,16 @@ public class Profile extends AppCompatActivity {
         });
 
         btnSettings.setOnClickListener(v -> {
-            startActivity(new Intent(Profile.this, ProfileSettings.class));
+            startActivity(new android.content.Intent(getContext(), ProfileSettings.class));
         });
 
         imgvPicture.setOnClickListener(v -> showAvatarSelector());
 
-        setupNavigation();
+        return view;
     }
 
     private void loadUserInfo() {
+        if (mAuth.getCurrentUser() == null) return;
         String uid = mAuth.getCurrentUser().getUid();
         db.collection("users").document(uid)
                 .get()
@@ -84,7 +89,7 @@ public class Profile extends AppCompatActivity {
                         tvUsername.setText(document.getString("username"));
                         String avatarName = document.getString("profile");
                         if (avatarName == null || avatarName.isEmpty()) avatarName = "default_avatar";
-                        int resId = getResources().getIdentifier(avatarName, "drawable", getPackageName());
+                        int resId = getResources().getIdentifier(avatarName, "drawable", requireContext().getPackageName());
                         imgvPicture.setImageResource(resId);
                     }
                 })
@@ -95,7 +100,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void showAvatarSelector() {
-        avatarDialog = new Dialog(this);
+        avatarDialog = new Dialog(requireContext());
         avatarDialog.setContentView(R.layout.dialog_avatar_preview);
         avatarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         avatarDialog.setCancelable(true);
@@ -107,15 +112,13 @@ public class Profile extends AppCompatActivity {
         imgPreview.setImageDrawable(imgvPicture.getDrawable());
 
         for (String avatarName : avatarNames) {
-            int resId = getResources().getIdentifier(avatarName, "drawable", getPackageName());
-
+            int resId = getResources().getIdentifier(avatarName, "drawable", requireContext().getPackageName());
             ImageView avatarView = getImageView(avatarName, resId, imgPreview);
-
             gridAvatars.addView(avatarView);
         }
 
         btnSave.setOnClickListener(v -> {
-            int resId = getResources().getIdentifier(selectedAvatarName, "drawable", getPackageName());
+            int resId = getResources().getIdentifier(selectedAvatarName, "drawable", requireContext().getPackageName());
             imgvPicture.setImageResource(resId);
             updateAvatarInFirestore(selectedAvatarName);
             avatarDialog.dismiss();
@@ -126,7 +129,7 @@ public class Profile extends AppCompatActivity {
 
     @NonNull
     private ImageView getImageView(String avatarName, int resId, ImageView imgPreview) {
-        ImageView avatarView = new ImageView(this);
+        ImageView avatarView = new ImageView(requireContext());
         avatarView.setImageResource(resId);
         avatarView.setAdjustViewBounds(true);
         avatarView.setMaxHeight(150);
@@ -145,50 +148,29 @@ public class Profile extends AppCompatActivity {
     }
 
     private void updateAvatarInFirestore(String avatarName) {
+        if (mAuth.getCurrentUser() == null) return;
         String uid = mAuth.getCurrentUser().getUid();
         db.collection("users").document(uid)
                 .update("profile", avatarName)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Avatar saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Avatar saved!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to save avatar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to save avatar", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void setupNavigation() {
-        ImageButton ibtnHome = findViewById(R.id.ibtnHome1);
-        ImageButton ibtnCalendar = findViewById(R.id.ibtnCalendar1);
-        ImageButton ibtnAnalytics = findViewById(R.id.ibtnAnalytics1);
-
-        ibtnHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, Home.class));
-            overridePendingTransition(0, 0);
-        });
-
-        ibtnCalendar.setOnClickListener(v -> {
-            startActivity(new Intent(this, Calendar.class));
-            overridePendingTransition(0, 0);
-        });
-
-        ibtnAnalytics.setOnClickListener(v -> {
-            startActivity(new Intent(this, Analytics.class));
-            overridePendingTransition(0, 0);
-        });
-    }
-
     private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.clProfileFragment, fragment)
-                .commit();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.clProfileFragment, fragment);
+        transaction.commit();
     }
 
     private void updateButtonStyles(Button selectedButton) {
-        int selectedBg = getResources().getColor(R.color.selected_button_bg);
-        int selectedText = getResources().getColor(R.color.white);
-        int defaultBg = getResources().getColor(R.color.default_button_bg);
-        int defaultText = getResources().getColor(R.color.default_text_color);
+        int selectedBg = getResources().getColor(R.color.selected_button_bg, requireContext().getTheme());
+        int selectedText = getResources().getColor(R.color.white, requireContext().getTheme());
+        int defaultBg = getResources().getColor(R.color.default_button_bg, requireContext().getTheme());
+        int defaultText = getResources().getColor(R.color.default_text_color, requireContext().getTheme());
 
         Button[] buttons = {btnBadges, btnPoints, btnRewards};
 

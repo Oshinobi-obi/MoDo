@@ -24,12 +24,7 @@ public class ProfileBadges extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_profile_badges, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_profile_badges, container, false);
 
         rvProfileBadges = view.findViewById(R.id.rvProfileBadges);
         rvProfileBadges.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -47,5 +42,7 @@ public class ProfileBadges extends Fragment {
 
         adapter = new ProfileBadgesAdapter(badgeList);
         rvProfileBadges.setAdapter(adapter);
+
+        return view;
     }
 }

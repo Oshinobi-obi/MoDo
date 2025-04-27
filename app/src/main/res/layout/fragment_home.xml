@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Home">
+    tools:context=".HomeFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,12 +28,12 @@
             android:id="@+id/svHomeBottom1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clHomeTop1"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clHomeTop1">
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- LinearLayout to wrap the ConstraintLayout -->
+        <!-- LinearLayout to wrap the ConstraintLayout -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins"
-                        android:text="Important"
+                        android:text="@string/Important"
                         android:textColor="#3b3b3b"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -64,9 +64,9 @@
                     <!-- Replaced View with ConstraintLayout -->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clImportant1"
-                        android:layout_width="320dp"
+                        android:layout_width="match_parent"
                         android:layout_height="193dp"
-                        android:background="@drawable/important"
+                        android:background="@drawable/home_important"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvImportant1">
@@ -116,7 +116,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clCurrentTask"
                     android:layout_width="match_parent"
@@ -144,21 +143,22 @@
                         android:layout_height="48dp"
                         android:clickable="true"
                         android:fontFamily="@font/poppins"
-                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
                         android:paddingTop="16dp"
                         android:text="@string/SeeAll"
                         android:textColor="#000000"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="RtlSymmetry" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clCurrentTask1"
-                        android:layout_width="320dp"
+                        android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/currenttaskmain"
+                        android:background="@drawable/task_currentmain"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvCurrentTaskSeeAll1">
@@ -209,8 +209,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clTask"
                     android:layout_width="match_parent"
@@ -225,14 +223,15 @@
                         android:layout_height="48dp"
                         android:clickable="true"
                         android:fontFamily="@font/poppins"
-                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
                         android:paddingTop="16dp"
                         android:text="@string/SeeAll"
                         android:textColor="#000000"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="RtlSymmetry" />
 
                     <TextView
                         android:id="@+id/tvTask1"
@@ -249,10 +248,10 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clTask1"
-                        android:layout_width="320dp"
+                        android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/currenttaskmain"
+                        android:background="@drawable/task_completedmain"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTask1">
@@ -302,6 +301,101 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clMissedTask"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:paddingLeft="45dp"
+                    android:paddingRight="45dp">
+
+                    <TextView
+                        android:id="@+id/tvMissedTaskSeeAll"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:clickable="true"
+                        android:fontFamily="@font/poppins"
+                        android:paddingStart="5dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/SeeAll"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/tvMissedTask"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="@string/MissedTask"
+                        android:textColor="#3b3b3b"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clMissedTask1"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/task_missedmain"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvMissedTask">
+
+                        <!-- Example child view inside -->
+                        <TextView
+                            android:id="@+id/tvMissedTaskTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/poppins"
+                            android:text="@string/Title"
+                            android:textColor="#3b3b3b"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvMissedTaskDescription"
+                            android:layout_width="280dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/poppins"
+                            android:text="@string/Description"
+                            android:textColor="#3b3b3b"
+                            android:textSize="12sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvMissedTaskTitle" />
+
+                        <TextView
+                            android:id="@+id/tvMissedTaskDeadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="22dp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/poppins"
+                            android:text="@string/Deadline"
+                            android:textColor="#3b3b3b"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             </LinearLayout>
 
         </ScrollView>
@@ -321,7 +415,7 @@
                 android:id="@+id/rectangle"
                 android:layout_width="0dp"
                 android:layout_height="230dp"
-                android:background="@drawable/rectangle"
+                android:background="@drawable/home_top_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -386,85 +480,6 @@
         <!-- ADD TASK BUTTON -->
 
         <!-- BOTTOM NAV BAR -->
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNav"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:background="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/ibtnHome1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Home1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/homeactive" />
-
-                <ImageButton
-                    android:id="@+id/ibtnCalendar1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Calendar1"
-                    android:scaleType="center"
-                    app:srcCompat="@drawable/calendaractive" />
-
-                <View
-                    android:layout_width="91dp"
-                    android:layout_height="match_parent" />
-
-                <ImageButton
-                    android:id="@+id/ibtnAnalytics1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Analytics1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/analyticsactive" />
-
-                <ImageButton
-                    android:id="@+id/ibtnProfile1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="#FFFFFF"
-                    android:contentDescription="@string/Profile1"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/profileinactive" />
-            </LinearLayout>
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddTask1"
-            android:layout_width="101dp"
-            android:layout_height="101dp"
-            android:clickable="true"
-            android:contentDescription="@string/AddTask1"
-            android:translationY="-20dp"
-            app:backgroundTint="#313037"
-            app:fabCustomSize="101dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:maxImageSize="40dp"
-            app:shapeAppearance="@style/CircularShape"
-            app:srcCompat="@android:drawable/ic_input_add"
-            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
