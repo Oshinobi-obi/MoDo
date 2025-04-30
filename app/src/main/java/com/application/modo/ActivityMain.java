@@ -1,20 +1,21 @@
 package com.application.modo;
 
-import android.content.Intent;
-import android.graphics.Color;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
-import android.app.AlertDialog;
-import androidx.annotation.NonNull;
+import android.graphics.Color;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.*;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ActivityMain extends AppCompatActivity {
@@ -40,11 +41,11 @@ public class ActivityMain extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Default load HomeFragment
         loadFragment(new HomeFragment());
         setActiveIcon(R.id.ibtnHome1);
 
-        // Bottom navigation
+        checkForMissedTasks();
+
         ibtnHome1.setOnClickListener(v -> {
             loadFragment(new HomeFragment());
             setActiveIcon(R.id.ibtnHome1);
@@ -68,6 +69,23 @@ public class ActivityMain extends AppCompatActivity {
         fabAddTask1.setOnClickListener(v -> showAddTaskModal());
     }
 
+    private void checkForMissedTasks() {
+        if (mAuth.getCurrentUser() == null) return;
+        String uid = mAuth.getCurrentUser().getUid();
+
+        db.collection("users").document(uid).collection("tasks")
+                .whereEqualTo("status", "Ongoing")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        Timestamp ts = doc.getTimestamp("deadlineTimestamp");
+                        if (ts != null && ts.toDate().before(new Date())) {
+                            doc.getReference().update("status", "Missing");
+                        }
+                    }
+                });
+    }
+
     private boolean loadFragment(Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager()
@@ -80,8 +98,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private void setActiveIcon(int selectedButtonId) {
-        if (ibtnHome1 == null || ibtnCalendar1 == null || ibtnAnalytics1 == null || ibtnProfile1 == null)
-            return;
+        if (ibtnHome1 == null || ibtnCalendar1 == null || ibtnAnalytics1 == null || ibtnProfile1 == null) return;
 
         ibtnHome1.setImageResource(selectedButtonId == R.id.ibtnHome1 ? R.drawable.homeactive : R.drawable.homeinactive);
         ibtnCalendar1.setImageResource(selectedButtonId == R.id.ibtnCalendar1 ? R.drawable.calendaractive : R.drawable.calendarinactive);
@@ -102,9 +119,9 @@ public class ActivityMain extends AppCompatActivity {
         Button btnDone = view.findViewById(R.id.btnDone);
 
         spnrPriorityLevel1.setAdapter(getPriorityAdapter());
-        spnrPriorityLevel1.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
-
         spnrLabelName1.setAdapter(getLabelAdapter());
+
+        spnrPriorityLevel1.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
         spnrLabelName1.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
 
         btnDateTime.setOnClickListener(v -> showDateTimePicker(btnDateTime));
@@ -114,6 +131,8 @@ public class ActivityMain extends AppCompatActivity {
             String description = etmlTaskDescription1.getText().toString().trim();
             String priority = spnrPriorityLevel1.getSelectedItem() != null ? spnrPriorityLevel1.getSelectedItem().toString() : "None";
             String label = spnrLabelName1.getSelectedItem() != null ? spnrLabelName1.getSelectedItem().toString() : "None";
+            String deadlineStr = selectedDeadline[0];
+            boolean hasDeadline = !deadlineStr.equals("No deadline");
 
             if (title.isEmpty()) {
                 etTaskTitle1.setError("Title is required!");
@@ -122,16 +141,37 @@ public class ActivityMain extends AppCompatActivity {
 
             if (mAuth.getCurrentUser() != null) {
                 String uid = mAuth.getCurrentUser().getUid();
+                Timestamp now = Timestamp.now();
+                Timestamp deadlineTS = null;
+
+                if (hasDeadline) {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a z", Locale.ENGLISH);
+                        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+                        Date deadlineDate = sdf.parse(deadlineStr);
+                        if (deadlineDate != null) {
+                            deadlineTS = new Timestamp(deadlineDate);
+                            DeadlineNotificationScheduler.schedule(
+                                    this, title, deadlineStr, deadlineDate.getTime() - 24 * 60 * 60 * 1000L
+                            );
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 Map<String, Object> taskData = new HashMap<>();
                 taskData.put("title", title);
                 taskData.put("description", description);
                 taskData.put("priority", priority);
                 taskData.put("label", label);
-                taskData.put("deadline", selectedDeadline[0]);
+                taskData.put("deadline", deadlineStr);
+                taskData.put("deadlineTimestamp", deadlineTS);
                 taskData.put("status", "Ongoing");
-                taskData.put("timestamp", Timestamp.now());
+                taskData.put("timestamp", now);
 
-                db.collection("users").document(uid).collection("tasks").add(taskData)
+                db.collection("users").document(uid).collection("tasks")
+                        .add(taskData)
                         .addOnSuccessListener(ref -> {
                             Toast.makeText(this, "Task added successfully!", Toast.LENGTH_SHORT).show();
                             addTaskDialog.dismiss();
@@ -168,8 +208,21 @@ public class ActivityMain extends AppCompatActivity {
             fullTimes.add(h + ":00 " + ampm);
         }
 
-        // Default full times for now
-        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>(fullTimes));
+        ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, fullTimes) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK); // black text for selected item
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK); // black text in dropdown
+                return view;
+            }
+        };
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timePicker.setAdapter(timeAdapter);
         timePicker.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
@@ -222,7 +275,21 @@ public class ActivityMain extends AppCompatActivity {
                 availableTimes.addAll(fullTimes); // normal future day
             }
 
-            ArrayAdapter<String> newTimeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, availableTimes);
+            ArrayAdapter<String> newTimeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, availableTimes) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    ((TextView) view).setTextColor(Color.BLACK);
+                    return view;
+                }
+
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    ((TextView) view).setTextColor(Color.BLACK);
+                    return view;
+                }
+            };
             newTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             timePicker.setAdapter(newTimeAdapter);
             timePicker.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
@@ -249,12 +316,45 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private ArrayAdapter<String> getPriorityAdapter() {
-        return new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList("High", "Medium", "Low"));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList("High", "Medium", "Low")) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK); // selected view text
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK); // dropdown items text
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
     }
 
+
     private ArrayAdapter<String> getLabelAdapter() {
-        return new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList(
                 "Work", "Personal", "School", "Fitness", "Finance", "Health", "Learning", "Hobby", "Project"
-        ));
+        )) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK);
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
     }
 }

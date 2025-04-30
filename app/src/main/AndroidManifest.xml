@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -17,18 +16,24 @@
 
         <!-- Activities -->
         <activity android:name=".ActivityMain" android:exported="false" />
-        <activity android:name=".AddTask" android:exported="false" />
-        <activity android:name=".HomeFragment" android:exported="false" />
-        <activity android:name=".ProfileFragment" android:exported="false" />
+        <activity android:name=".AddTask" android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity android:name=".HomeFragment" android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity android:name=".ProfileFragment" android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity android:name=".ProfileSettings" android:exported="false" />
-        <activity android:name=".AnalyticsFragment" android:exported="false" />
-        <activity android:name=".CalendarFragment" android:exported="false" />
+        <activity android:name=".AnalyticsFragment" android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity android:name=".CalendarFragment" android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity android:name=".SignUp2nd" android:exported="false" />
         <activity android:name=".SignUp1st" android:exported="false" />
         <activity android:name=".ForgotPassword" android:exported="false" />
         <activity android:name=".HomeCurrentTask" android:exported="false" />
         <activity android:name=".HomeCompletedTask" android:exported="false" />
         <activity android:name=".Login" android:exported="false" />
+        <receiver android:name=".DeadlineNotificationReceiver" android:exported="false"/>
 
         <!-- Entry point -->
         <activity android:name=".Landing" android:exported="true">

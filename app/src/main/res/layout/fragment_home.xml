@@ -5,15 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:background="#FFFFFF"
     tools:context=".HomeFragment">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clHome1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:background="#FAFAFA"
+        android:background="#FFFFFF"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,7 +95,8 @@
                             android:text="@string/Prioritize"
                             android:textColor="@color/white"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tvModo1" />
+                            app:layout_constraintTop_toBottomOf="@+id/tvModo1"
+                            tools:ignore="TextSizeCheck" />
 
                         <Button
                             android:id="@+id/button"
@@ -151,7 +151,7 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="RtlSymmetry" />
+                        tools:ignore="RtlSymmetry,TextSizeCheck,DuplicateSpeakableTextCheck" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clCurrentTask1"
@@ -231,7 +231,7 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="RtlSymmetry" />
+                        tools:ignore="RtlSymmetry,TextSizeCheck" />
 
                     <TextView
                         android:id="@+id/tvTask1"
@@ -448,7 +448,8 @@
                 android:textSize="40sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvHello1" />
+                app:layout_constraintTop_toBottomOf="@id/tvHello1"
+                tools:ignore="TextSizeCheck" />
 
             <!-- Hello TextView -->
             <TextView
