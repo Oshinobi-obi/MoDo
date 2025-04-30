@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import android.graphics.Color;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-import java.util.ArrayList;
-import java.util.List;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -24,17 +23,22 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class AnalyticsOverallFragment extends Fragment {
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private TextView tvTotalTaskAmount1;
-    private TextView tvOverallCompletedTask1;
+    private TextView tvTotalTaskAmount1, tvOverallCompletedTask1, tvOverallMissedTask1, tvOverallOngoingTask1, tvOverallCompletionRate1;
     private PieChart pieChart;
+    private BarChart barChart;
 
     public AnalyticsOverallFragment() {}
 
@@ -47,9 +51,12 @@ public class AnalyticsOverallFragment extends Fragment {
 
         tvTotalTaskAmount1 = view.findViewById(R.id.tvTotalTaskAmount1);
         tvOverallCompletedTask1 = view.findViewById(R.id.tvOverallCompletedTask1);
+        tvOverallMissedTask1 = view.findViewById(R.id.tvOverallMissedTask1);
+        tvOverallOngoingTask1 = view.findViewById(R.id.tvOverallOngoingTask1);
+        tvOverallCompletionRate1 = view.findViewById(R.id.tvOverallCompletionRate1);
         pieChart = view.findViewById(R.id.overallPieChart);
+        barChart = view.findViewById(R.id.overallBarChart);
 
-        setupBarChart(view);
         setupLineChart(view);
         fetchTaskStatistics();
 
@@ -65,14 +72,25 @@ public class AnalyticsOverallFragment extends Fragment {
                 .addOnSuccessListener(querySnapshot -> {
                     int totalTasks = 0;
                     int completedTasks = 0;
+                    int missedTasks = 0;
+                    int ongoingTasks = 0;
                     int highCount = 0, mediumCount = 0, lowCount = 0;
+
+                    int[] completedPerDay = new int[7]; // Sun to Sat
+                    int[] missedPerDay = new int[7];    // Sun to Sat
 
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         totalTasks++;
 
                         String status = doc.getString("status");
-                        if (status != null && status.equalsIgnoreCase("Completed")) {
-                            completedTasks++;
+                        if (status != null) {
+                            if (status.equalsIgnoreCase("Completed")) {
+                                completedTasks++;
+                            } else if (status.equalsIgnoreCase("Missed")) {
+                                missedTasks++;
+                            } else if (status.equalsIgnoreCase("Ongoing")) {
+                                ongoingTasks++;
+                            }
                         }
 
                         String priority = doc.getString("priority");
@@ -83,63 +101,94 @@ public class AnalyticsOverallFragment extends Fragment {
                                 case "Low": lowCount++; break;
                             }
                         }
+
+                        // Group by weekday
+                        String deadlineStr = doc.getString("deadline"); // e.g., "4/30/2025 6:00 PM PHT"
+                        if (deadlineStr != null && status != null) {
+                            try {
+                                // Remove timezone suffix and parse using matching pattern
+                                String[] parts = deadlineStr.split(" PHT");
+                                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("M/d/yyyy h:mm a");
+                                java.util.Date parsedDate = sdf.parse(parts[0]);
+
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(parsedDate);
+                                int dayIndex = cal.get(Calendar.DAY_OF_WEEK) - 1; // 0 = Sunday, ..., 6 = Saturday
+
+                                if (status.equalsIgnoreCase("Completed")) {
+                                    completedPerDay[dayIndex]++;
+                                } else if (status.equalsIgnoreCase("Missed")) {
+                                    missedPerDay[dayIndex]++;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace(); // Handle bad date format gracefully
+                            }
+                        }
                     }
 
                     tvTotalTaskAmount1.setText(String.valueOf(totalTasks));
                     tvOverallCompletedTask1.setText(String.valueOf(completedTasks));
+                    tvOverallMissedTask1.setText(String.valueOf(missedTasks));
+                    tvOverallOngoingTask1.setText(String.valueOf(ongoingTasks));
+
+                    if (totalTasks > 0) {
+                        float completionRate = (completedTasks * 100f) / totalTasks;
+                        tvOverallCompletionRate1.setText(String.format("%.0f%%", completionRate));
+                    } else {
+                        tvOverallCompletionRate1.setText("0%");
+                    }
 
                     setupPieChart(highCount, mediumCount, lowCount);
+                    setupBarChart(completedPerDay, missedPerDay);
                 })
                 .addOnFailureListener(e -> {
                     tvTotalTaskAmount1.setText("0");
                     tvOverallCompletedTask1.setText("0");
+                    tvOverallMissedTask1.setText("0");
+                    tvOverallOngoingTask1.setText("0");
+                    tvOverallCompletionRate1.setText("0%");
                     setupPieChart(0, 0, 0);
+                    setupBarChart(new int[7], new int[7]);
                 });
     }
 
-    private void setupBarChart(View view) {
-        BarChart barChart = view.findViewById(R.id.overallBarChart);
-        barChart.setTouchEnabled(false);
-        barChart.setDragEnabled(false);
-        barChart.setScaleEnabled(false);
-        barChart.setPinchZoom(false);
+    private void setupBarChart(int[] completed, int[] missed) {
+        List<BarEntry> completedEntries = new ArrayList<>();
+        List<BarEntry> missedEntries = new ArrayList<>();
 
-        List<BarEntry> completeTaskEntries = List.of(
-                new BarEntry(0f, 10f), new BarEntry(1f, 7f),
-                new BarEntry(2f, 12f), new BarEntry(3f, 8f),
-                new BarEntry(4f, 11f), new BarEntry(5f, 9f),
-                new BarEntry(6f, 13f)
-        );
+        for (int i = 0; i < 7; i++) {
+            completedEntries.add(new BarEntry(i, completed[i]));
+            missedEntries.add(new BarEntry(i, missed[i]));
+        }
 
-        List<BarEntry> incompleteTaskEntries = List.of(
-                new BarEntry(0f, 5f), new BarEntry(1f, 4f),
-                new BarEntry(2f, 3f), new BarEntry(3f, 6f),
-                new BarEntry(4f, 2f), new BarEntry(5f, 7f),
-                new BarEntry(6f, 4f)
-        );
+        BarDataSet completedSet = new BarDataSet(completedEntries, "Completed Task");
+        completedSet.setColor(Color.rgb(49, 48, 55));
+        completedSet.setValueTextColor(Color.BLACK);
+        completedSet.setValueTextSize(12f);
+        completedSet.setValueFormatter(new IntValueFormatter());
 
-        BarDataSet completeTaskDataSet = new BarDataSet(completeTaskEntries, "Complete Task");
-        completeTaskDataSet.setColor(Color.rgb(49, 48, 55));
-        completeTaskDataSet.setValueTextColor(Color.BLACK);
-        completeTaskDataSet.setValueTextSize(12f);
-        completeTaskDataSet.setValueFormatter(new IntValueFormatter());
+        BarDataSet missedSet = new BarDataSet(missedEntries, "Missed Task");
+        missedSet.setColor(Color.rgb(147, 144, 174));
+        missedSet.setValueTextColor(Color.BLACK);
+        missedSet.setValueTextSize(12f);
+        missedSet.setValueFormatter(new IntValueFormatter());
 
-        BarDataSet incompleteTaskDataSet = new BarDataSet(incompleteTaskEntries, "Incomplete Task");
-        incompleteTaskDataSet.setColor(Color.rgb(147, 144, 174));
-        incompleteTaskDataSet.setValueTextColor(Color.BLACK);
-        incompleteTaskDataSet.setValueTextSize(12f);
-        incompleteTaskDataSet.setValueFormatter(new IntValueFormatter());
+        float barWidth = 0.3f;
+        float barSpace = 0.05f;  // Space between bars in same group
+        float groupSpace = 0.3f; // Space between groups
 
-        float groupSpace = 0.25f, barSpace = 0.05f, barWidth = 0.35f;
-        BarData data = new BarData(completeTaskDataSet, incompleteTaskDataSet);
-        data.setBarWidth(barWidth);
+        BarData barData = new BarData(completedSet, missedSet);
+        barData.setBarWidth(barWidth);
+        barChart.setData(barData);
 
-        barChart.setData(data);
-        barChart.getXAxis().setAxisMinimum(0f);
-        barChart.getXAxis().setAxisMaximum(data.getGroupWidth(groupSpace, barSpace) * 7);
+        // 🛠️ This line is CRUCIAL — must call BEFORE groupBars
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setAxisMinimum(0f);
+        float groupWidth = barData.getGroupWidth(groupSpace, barSpace);
+        xAxis.setAxisMaximum(0f + groupWidth * 7); // 7 days = 7 groups
         barChart.groupBars(0f, groupSpace, barSpace);
 
-        XAxis xAxis = barChart.getXAxis();
+        // X Axis styling
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
@@ -149,18 +198,29 @@ public class AnalyticsOverallFragment extends Fragment {
         xAxis.setDrawGridLines(false);
         xAxis.setValueFormatter(new DayValueFormatter());
 
+        // Y Axis styling
         barChart.getAxisLeft().setTextColor(Color.BLACK);
         barChart.getAxisRight().setEnabled(false);
 
+        // Legend styling
         Legend legend = barChart.getLegend();
         legend.setEnabled(true);
         legend.setTextColor(Color.BLACK);
         legend.setTextSize(14f);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+        legend.setXEntrySpace(40f);
 
+        // Chart settings
         barChart.getDescription().setEnabled(false);
         barChart.setExtraOffsets(10, 10, 10, 10);
+        barChart.setTouchEnabled(false);
+        barChart.setDragEnabled(false);
+        barChart.setScaleEnabled(false);
+        barChart.setPinchZoom(false);
+
         barChart.animateY(1000);
         barChart.invalidate();
     }
@@ -185,7 +245,6 @@ public class AnalyticsOverallFragment extends Fragment {
         pieChart.getDescription().setEnabled(false);
         pieChart.setEntryLabelColor(Color.BLACK);
         pieChart.setEntryLabelTextSize(10f);
-
         pieChart.setMinOffset(10f);
 
         Legend legend = pieChart.getLegend();

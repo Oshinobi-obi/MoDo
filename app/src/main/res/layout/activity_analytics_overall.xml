@@ -61,6 +61,76 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvKeyStatistics2" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clOngoingTask1"
+                    android:layout_width="180dp"
+                    android:layout_height="90dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/home_important"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/clMissedTask1">
+
+                    <TextView
+                        android:id="@+id/tvOverallOngoingTask1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="0"
+                        android:textColor="#FFFFFF"
+                        android:textSize="40sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvOngoingTask1" />
+
+                    <TextView
+                        android:id="@+id/tvOngoingTask1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/merriweather"
+                        android:text="Total Ongoing task"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clUpcomingTask1"
+                    android:layout_width="180dp"
+                    android:layout_height="90dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/home_important"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/clCompletedTask1">
+
+                    <TextView
+                        android:id="@+id/tvOverallUpcomingTask1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="0"
+                        android:textColor="#FFFFFF"
+                        android:textSize="40sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvUpcomingTask1" />
+
+                    <TextView
+                        android:id="@+id/tvUpcomingTask1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/merriweather"
+                        android:text="Total Upcoming task"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clCompletedTask1"
                     android:layout_width="180dp"
                     android:layout_height="90dp"
@@ -139,7 +209,7 @@
                     android:background="@drawable/analytics_avg_middle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/clCompletedTask1">
+                    app:layout_constraintTop_toBottomOf="@+id/clUpcomingTask1">
 
                     <TextView
                         android:id="@+id/tvTotalTaskAmount2"

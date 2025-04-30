@@ -67,8 +67,9 @@
     <string name="BreakReminder">Break Reminder:</string>
 
     <!--C-->
-    <string name="CompletedDate">Completed Date</string>
-    <string name="CurrentTasks">Current Tasks</string>
+    <string name="CurrentTasks">Ongoing Task</string>
+    <string name="CompletedTask">Completed Task</string>
+
 
     <!--D-->
     <string name="Deadline">Deadline</string>
@@ -134,12 +135,14 @@
     <string name="TaskCompletedDate">Task Completed Date</string>
     <string name="TaskDescription">Task Description</string>
     <string name="TaskDuration">Task Duration</string>
-    <string name="TaskHistory">Completed Tasks</string>
     <string name="TaskMissed">Missed Tasks</string>
     <string name="TaskReminder">Task Reminder:</string>
     <string name="TaskTitle">Task Title</string>
     <string name="title_required">Title is required</string>
     <string name="TodoList">To do List</string>
+
+    <!--U-->
+    <string name="UpcomingTask">Upcoming Task</string>
 
     <!--W-->
     <string name="WEEKLY">WEEKLY</string>
