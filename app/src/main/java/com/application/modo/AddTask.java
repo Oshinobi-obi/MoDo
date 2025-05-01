@@ -21,7 +21,7 @@ public class AddTask {
         this.priority = priority;
         this.label = label;
         this.deadline = deadline;
-        this.status = "Ongoing";
+        this.status = "Upcoming";
         this.timestamp = Timestamp.now();
     }
 

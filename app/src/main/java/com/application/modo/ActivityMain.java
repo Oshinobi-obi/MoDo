@@ -13,7 +13,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -146,7 +145,7 @@ public class ActivityMain extends AppCompatActivity {
 
                 if (hasDeadline) {
                     try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a z", Locale.ENGLISH);
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a", Locale.ENGLISH);
                         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
                         Date deadlineDate = sdf.parse(deadlineStr);
                         if (deadlineDate != null) {
@@ -167,7 +166,7 @@ public class ActivityMain extends AppCompatActivity {
                 taskData.put("label", label);
                 taskData.put("deadline", deadlineStr);
                 taskData.put("deadlineTimestamp", deadlineTS);
-                taskData.put("status", "Ongoing");
+                taskData.put("status", "Upcoming");
                 taskData.put("timestamp", now);
 
                 db.collection("users").document(uid).collection("tasks")
@@ -307,7 +306,7 @@ public class ActivityMain extends AppCompatActivity {
                 return;
             }
 
-            selectedDeadline[0] = date + " " + time + " PHT";
+            selectedDeadline[0] = date + " " + time;
             btnDateTime.setText(selectedDeadline[0]);
             dateDialog.dismiss();
         });

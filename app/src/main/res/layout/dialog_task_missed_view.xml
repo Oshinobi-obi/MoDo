@@ -9,7 +9,7 @@
         android:id="@+id/clMissedTask1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/task_missed"
+        android:background="@drawable/task_current"
         android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvCTLabel"
+            android:id="@+id/tvMTLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
@@ -27,7 +27,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCTDeadlineDuration" />
+            app:layout_constraintTop_toBottomOf="@+id/tvMTDeadlineDuration" />
 
         <Button
             android:id="@+id/btnDone"
@@ -41,10 +41,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCTLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/tvMTLabel" />
 
         <TextView
-            android:id="@+id/tvCTDeadlineDuration"
+            android:id="@+id/tvMTDeadlineDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -57,7 +57,7 @@
             app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
         <TextView
-            android:id="@+id/tvCTTaskTitle"
+            android:id="@+id/tvMTTaskTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
@@ -69,14 +69,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvCTTaskDescription"
+            android:id="@+id/tvMTTaskDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task Description"
             android:textColor="#3b3b3b"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCTTaskTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/tvMTTaskTitle" />
 
         <View
             android:id="@+id/divider2"
@@ -86,7 +86,7 @@
             android:background="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCTTaskDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/tvMTTaskDescription" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,6 +32,8 @@
         <activity android:name=".ForgotPassword" android:exported="false" />
         <activity android:name=".HomeCurrentTask" android:exported="false" />
         <activity android:name=".HomeCompletedTask" android:exported="false" />
+        <activity android:name=".HomeUpcomingTask" android:exported="false" />
+        <activity android:name=".HomeMissedTask" android:exported="false" />
         <activity android:name=".Login" android:exported="false" />
         <receiver android:name=".DeadlineNotificationReceiver" android:exported="false"/>
 
