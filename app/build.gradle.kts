@@ -53,4 +53,5 @@ dependencies {
     implementation ("com.google.firebase:firebase-storage:20.2.1")
     implementation ("com.google.android.material:material:1.6.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation ("androidx.work:work-runtime:2.9.0")
 }

@@ -1,6 +1,8 @@
 package com.application.modo;
 
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,8 @@ import com.google.firebase.firestore.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import androidx.work.*;
+import android.Manifest;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -44,6 +48,7 @@ public class ActivityMain extends AppCompatActivity {
         setActiveIcon(R.id.ibtnHome1);
 
         checkForMissedTasks();
+        scheduleMissedTaskChecker();
 
         ibtnHome1.setOnClickListener(v -> {
             loadFragment(new HomeFragment());
@@ -65,6 +70,13 @@ public class ActivityMain extends AppCompatActivity {
             setActiveIcon(R.id.ibtnProfile1);
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
+
         fabAddTask1.setOnClickListener(v -> showAddTaskModal());
     }
 
@@ -83,6 +95,19 @@ public class ActivityMain extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void scheduleMissedTaskChecker() {
+        PeriodicWorkRequest workRequest =
+                new PeriodicWorkRequest.Builder(CheckMissedTaskWorker.class, 12, java.util.concurrent.TimeUnit.HOURS)
+                        .addTag("missedTaskChecker")
+                        .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "missedTaskChecker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -174,6 +199,10 @@ public class ActivityMain extends AppCompatActivity {
                         .addOnSuccessListener(ref -> {
                             Toast.makeText(this, "Task added successfully!", Toast.LENGTH_SHORT).show();
                             addTaskDialog.dismiss();
+
+                            // ✅ Re-load HomeFragment to reflect the newly added task
+                            loadFragment(new HomeFragment());
+                            setActiveIcon(R.id.ibtnHome1); // highlight Home icon
                         })
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to save task.", Toast.LENGTH_SHORT).show());
             }

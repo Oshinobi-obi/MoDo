@@ -14,15 +14,15 @@ public class DeadlineNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String taskTitle = intent.getStringExtra("taskTitle");
-        String deadlineTime = intent.getStringExtra("deadlineTime");
+        String message = intent.getStringExtra("customMessage");
 
         Intent activityIntent = new Intent(context, ActivityMain.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "modo_deadline_channel")
                 .setSmallIcon(R.drawable.notification)
-                .setContentTitle("Upcoming Task Deadline")
-                .setContentText("Your task \"" + taskTitle + "\" is due on " + deadlineTime)
+                .setContentTitle("Task Reminder")
+                .setContentText(message != null ? message : ("Reminder for: " + taskTitle))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
