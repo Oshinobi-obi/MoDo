@@ -27,8 +27,9 @@ public class AnalyticsOverallFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private TextView tvTotalTaskAmount1, tvOverallCompletedTask1, tvOverallMissedTask1, tvOverallOngoingTask1, tvOverallCompletionRate1, tvOverallProductivityScore1;
-    ;
     private TextView tvMostProductiveDayofWeek1, tvLeastProductiveDayofWeek1;
+    private TextView tvOverallUpcomingTask1;
+
     private PieChart pieChart;
     private BarChart barChart;
     private LineChart lineChart;
@@ -50,6 +51,7 @@ public class AnalyticsOverallFragment extends Fragment {
         tvMostProductiveDayofWeek1 = view.findViewById(R.id.tvMostProductiveDayofWeek1);
         tvLeastProductiveDayofWeek1 = view.findViewById(R.id.tvLeastProductiveDayofWeek1);
         tvOverallProductivityScore1 = view.findViewById(R.id.tvOverallProductivityScore1);
+        tvOverallUpcomingTask1 = view.findViewById(R.id.tvOverallUpcomingTask1);
 
         pieChart = view.findViewById(R.id.overallPieChart);
         barChart = view.findViewById(R.id.overallBarChart);
@@ -66,7 +68,7 @@ public class AnalyticsOverallFragment extends Fragment {
         db.collection("users").document(uid).collection("tasks")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    int totalTasks = 0, completedTasks = 0, missedTasks = 0, ongoingTasks = 0;
+                    int totalTasks = 0, completedTasks = 0, missedTasks = 0, ongoingTasks = 0, upcomingTasks = 0;
                     int highCount = 0, mediumCount = 0, lowCount = 0;
                     int[] completedPerDay = new int[7];
                     int[] missedPerDay = new int[7];
@@ -77,11 +79,14 @@ public class AnalyticsOverallFragment extends Fragment {
                         totalTasks++;
                         String status = doc.getString("status");
                         String priority = doc.getString("priority");
+
                         if (status != null) {
                             if (status.equalsIgnoreCase("Completed")) completedTasks++;
                             else if (status.equalsIgnoreCase("Missed")) missedTasks++;
                             else if (status.equalsIgnoreCase("Ongoing")) ongoingTasks++;
+                            else if (status.equalsIgnoreCase("Upcoming")) upcomingTasks++;
                         }
+
                         if (priority != null) {
                             switch (priority) {
                                 case "High": highCount++; break;
@@ -122,11 +127,13 @@ public class AnalyticsOverallFragment extends Fragment {
                     tvOverallCompletedTask1.setText(String.valueOf(completedTasks));
                     tvOverallMissedTask1.setText(String.valueOf(missedTasks));
                     tvOverallOngoingTask1.setText(String.valueOf(ongoingTasks));
+                    tvOverallUpcomingTask1.setText(String.valueOf(upcomingTasks)); // ✅ New line
                     tvOverallCompletionRate1.setText(totalTasks > 0 ? String.format("%.0f%%", (completedTasks * 100f / totalTasks)) : "0%");
 
                     setupPieChart(highCount, mediumCount, lowCount);
                     setupBarChart(completedPerDay, missedPerDay);
 
+                    // === LineChart Scores ===
                     List<Entry> productivityEntries = new ArrayList<>();
                     float[] scores = new float[7];
                     for (int i = 0; i < 7; i++) {
@@ -142,6 +149,7 @@ public class AnalyticsOverallFragment extends Fragment {
                     float averageProductivity = totalProductivity / 7f;
                     tvOverallProductivityScore1.setText(String.format(Locale.ENGLISH, "Your overall productivity score is %.1f!", averageProductivity));
 
+                    // === Most/Least Productive Days ===
                     float max = scores[0], min = scores[0];
                     List<String> maxDays = new ArrayList<>(), minDays = new ArrayList<>();
                     String[] dayLabels = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -185,9 +193,9 @@ public class AnalyticsOverallFragment extends Fragment {
                             tvLeastProductiveDayofWeek1.setText(minDays.get(0));
                         }
                     }
-
                 });
     }
+
 
 
     private void setupBarChart(int[] completed, int[] missed) {
