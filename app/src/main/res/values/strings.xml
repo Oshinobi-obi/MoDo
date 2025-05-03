@@ -75,6 +75,7 @@
     <string name="Deadline">Deadline</string>
     <string name="Description">Description</string>
     <string name="Done">Done</string>
+    <string name="DTD">Deadline (Date - Time - Duration)</string>
 
     <!--E-->
     <string name="EditTask">Edit Task</string>
