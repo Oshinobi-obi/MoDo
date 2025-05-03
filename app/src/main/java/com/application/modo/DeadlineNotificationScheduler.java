@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.util.Log;
 
 public class DeadlineNotificationScheduler {
 
@@ -29,7 +31,17 @@ public class DeadlineNotificationScheduler {
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (!alarmManager.canScheduleExactAlarms()) {
+                    Log.w("DeadlineScheduler", "Exact alarm permission not granted. Alarm not scheduled.");
+                    return; // Silent fail with log
+                }
+            }
+            try {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+            } catch (SecurityException e) {
+                Log.e("DeadlineScheduler", "Failed to schedule exact alarm: " + e.getMessage());
+            }
         }
     }
 }

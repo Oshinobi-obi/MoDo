@@ -10,17 +10,19 @@ public class AddTask {
     private String deadline;
     private String status;
     private Timestamp timestamp;
+    private String duration;
 
     // 🆕 Default empty constructor (important for Firestore)
     public AddTask() {}
 
     // 🆕 Full constructor (optional, when you create a new task)
-    public AddTask(String title, String description, String priority, String label, String deadline) {
+    public AddTask(String title, String description, String priority, String label, String deadline, String duration) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.label = label;
         this.deadline = deadline;
+        this.duration = duration;
         this.status = "Upcoming";
         this.timestamp = Timestamp.now();
     }
@@ -29,6 +31,10 @@ public class AddTask {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public void setDescription(String description) {
@@ -59,6 +65,10 @@ public class AddTask {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getDuration() {
+        return duration;
     }
 
     public String getDescription() {

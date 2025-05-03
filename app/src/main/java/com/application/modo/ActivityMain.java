@@ -1,5 +1,6 @@
 package com.application.modo;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -29,6 +30,8 @@ public class ActivityMain extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private AlertDialog addTaskDialog;
     private final String[] selectedDeadline = {"No deadline"};
+    private final String[] selectedDuration = {"00:15:00"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +196,7 @@ public class ActivityMain extends AppCompatActivity {
                 taskData.put("deadlineTimestamp", deadlineTS);
                 taskData.put("status", "Upcoming");
                 taskData.put("timestamp", now);
+                taskData.put("duration", selectedDuration[0]);
 
                 db.collection("users").document(uid).collection("tasks")
                         .add(taskData)
@@ -211,6 +215,7 @@ public class ActivityMain extends AppCompatActivity {
         addTaskDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     private void showDateTimePicker(Button btnDateTime) {
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_taskdatetimepicker, null);
         AlertDialog dateDialog = new AlertDialog.Builder(this).setView(view).create();
@@ -223,6 +228,10 @@ public class ActivityMain extends AppCompatActivity {
         DatePicker datePicker = view.findViewById(R.id.datePicker1);
         Spinner timePicker = view.findViewById(R.id.spnrTimePicker1);
         Button btnDone = view.findViewById(R.id.btnDone);
+        Spinner spnrTaskDuration1 = view.findViewById(R.id.spnrTaskDuration1);
+        spnrTaskDuration1.setAdapter(getDurationAdapter());
+        spnrTaskDuration1.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
+
 
         // 📍 Block selecting dates before today
         datePicker.setMinDate(System.currentTimeMillis() - 1000);
@@ -335,8 +344,18 @@ public class ActivityMain extends AppCompatActivity {
                 return;
             }
 
+            String duration = spnrTaskDuration1.getSelectedItem() != null
+                    ? spnrTaskDuration1.getSelectedItem().toString()
+                    : "00:15:00";
+
+            // ✅ Store clean values for saving to Firestore
             selectedDeadline[0] = date + " " + time;
-            btnDateTime.setText(selectedDeadline[0]);
+            selectedDuration[0] = duration;
+
+            // ✅ Display formatted deadline and duration to the user
+            String displayText = selectedDeadline[0] + " • " + selectedDuration[0];
+            btnDateTime.setText(displayText);
+
             dateDialog.dismiss();
         });
 
@@ -384,5 +403,31 @@ public class ActivityMain extends AppCompatActivity {
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
+    }
+
+    private ArrayAdapter<String> getDurationAdapter() {
+        List<String> durations = new ArrayList<>();
+        for (int mins = 15; mins <= 480; mins += 15) {
+            int hours = mins / 60;
+            int minutes = mins % 60;
+            String formatted = String.format(Locale.getDefault(), "%02d:%02d:00", hours, minutes);
+            durations.add(formatted);
+        }
+
+        return new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, durations) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK);
+                return view;
+            }
+        };
     }
 }
