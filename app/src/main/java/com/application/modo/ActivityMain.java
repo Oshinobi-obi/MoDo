@@ -1,6 +1,9 @@
 package com.application.modo;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +16,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import androidx.work.*;
+import android.Manifest;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -26,6 +30,8 @@ public class ActivityMain extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private AlertDialog addTaskDialog;
     private final String[] selectedDeadline = {"No deadline"};
+    private final String[] selectedDuration = {"00:15:00"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,7 @@ public class ActivityMain extends AppCompatActivity {
         setActiveIcon(R.id.ibtnHome1);
 
         checkForMissedTasks();
+        scheduleMissedTaskChecker();
 
         ibtnHome1.setOnClickListener(v -> {
             loadFragment(new HomeFragment());
@@ -66,6 +73,13 @@ public class ActivityMain extends AppCompatActivity {
             setActiveIcon(R.id.ibtnProfile1);
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
+
         fabAddTask1.setOnClickListener(v -> showAddTaskModal());
     }
 
@@ -84,6 +98,19 @@ public class ActivityMain extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void scheduleMissedTaskChecker() {
+        PeriodicWorkRequest workRequest =
+                new PeriodicWorkRequest.Builder(CheckMissedTaskWorker.class, 12, java.util.concurrent.TimeUnit.HOURS)
+                        .addTag("missedTaskChecker")
+                        .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "missedTaskChecker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -146,7 +173,7 @@ public class ActivityMain extends AppCompatActivity {
 
                 if (hasDeadline) {
                     try {
-                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a z", Locale.ENGLISH);
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a", Locale.ENGLISH);
                         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
                         Date deadlineDate = sdf.parse(deadlineStr);
                         if (deadlineDate != null) {
@@ -167,14 +194,19 @@ public class ActivityMain extends AppCompatActivity {
                 taskData.put("label", label);
                 taskData.put("deadline", deadlineStr);
                 taskData.put("deadlineTimestamp", deadlineTS);
-                taskData.put("status", "Ongoing");
+                taskData.put("status", "Upcoming");
                 taskData.put("timestamp", now);
+                taskData.put("duration", selectedDuration[0]);
 
                 db.collection("users").document(uid).collection("tasks")
                         .add(taskData)
                         .addOnSuccessListener(ref -> {
                             Toast.makeText(this, "Task added successfully!", Toast.LENGTH_SHORT).show();
                             addTaskDialog.dismiss();
+
+                            // ✅ Re-load HomeFragment to reflect the newly added task
+                            loadFragment(new HomeFragment());
+                            setActiveIcon(R.id.ibtnHome1); // highlight Home icon
                         })
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to save task.", Toast.LENGTH_SHORT).show());
             }
@@ -183,6 +215,7 @@ public class ActivityMain extends AppCompatActivity {
         addTaskDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     private void showDateTimePicker(Button btnDateTime) {
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_taskdatetimepicker, null);
         AlertDialog dateDialog = new AlertDialog.Builder(this).setView(view).create();
@@ -195,6 +228,10 @@ public class ActivityMain extends AppCompatActivity {
         DatePicker datePicker = view.findViewById(R.id.datePicker1);
         Spinner timePicker = view.findViewById(R.id.spnrTimePicker1);
         Button btnDone = view.findViewById(R.id.btnDone);
+        Spinner spnrTaskDuration1 = view.findViewById(R.id.spnrTaskDuration1);
+        spnrTaskDuration1.setAdapter(getDurationAdapter());
+        spnrTaskDuration1.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
+
 
         // 📍 Block selecting dates before today
         datePicker.setMinDate(System.currentTimeMillis() - 1000);
@@ -307,8 +344,18 @@ public class ActivityMain extends AppCompatActivity {
                 return;
             }
 
-            selectedDeadline[0] = date + " " + time + " PHT";
-            btnDateTime.setText(selectedDeadline[0]);
+            String duration = spnrTaskDuration1.getSelectedItem() != null
+                    ? spnrTaskDuration1.getSelectedItem().toString()
+                    : "00:15:00";
+
+            // ✅ Store clean values for saving to Firestore
+            selectedDeadline[0] = date + " " + time;
+            selectedDuration[0] = duration;
+
+            // ✅ Display formatted deadline and duration to the user
+            String displayText = selectedDeadline[0] + " • " + selectedDuration[0];
+            btnDateTime.setText(displayText);
+
             dateDialog.dismiss();
         });
 
@@ -356,5 +403,31 @@ public class ActivityMain extends AppCompatActivity {
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
+    }
+
+    private ArrayAdapter<String> getDurationAdapter() {
+        List<String> durations = new ArrayList<>();
+        for (int mins = 15; mins <= 480; mins += 15) {
+            int hours = mins / 60;
+            int minutes = mins % 60;
+            String formatted = String.format(Locale.getDefault(), "%02d:%02d:00", hours, minutes);
+            durations.add(formatted);
+        }
+
+        return new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, durations) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                ((TextView) view).setTextColor(Color.BLACK);
+                return view;
+            }
+        };
     }
 }

@@ -147,7 +147,7 @@
             android:layout_marginTop="5dp"
             android:backgroundTint="#DAD9E0"
             android:fontFamily="@font/poppins"
-            android:text="03/10/2025 - 11:00am"
+            android:text="03/10/2025 - 11:00am 00:15:00"
             android:textColor="#313037"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/imageView2"

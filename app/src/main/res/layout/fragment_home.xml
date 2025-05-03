@@ -159,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/task_upcomingmain"
+                        android:background="@drawable/task_current"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvUpcomingTask">
@@ -252,7 +252,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/task_currentmain"
+                        android:background="@drawable/task_current"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvCurrentTaskSeeAll1">
@@ -345,7 +345,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/task_completedmain"
+                        android:background="@drawable/task_current"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvTask1">
@@ -438,7 +438,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/task_missedmain"
+                        android:background="@drawable/task_current"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvMissedTask">

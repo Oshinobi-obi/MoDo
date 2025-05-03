@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
-    android:background="@drawable/task_missedmain">
+    android:background="@drawable/task_current">
 
     <TextView
         android:id="@+id/tvMissedTaskTitle1"

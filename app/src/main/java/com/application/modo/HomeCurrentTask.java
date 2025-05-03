@@ -51,6 +51,8 @@ public class HomeCurrentTask extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.ivReturnCurrentTask).setOnClickListener(v -> {
+            Intent intent = new Intent(HomeCurrentTask.this, ActivityMain.class);
+            startActivity(intent);
             finish();
         });
 

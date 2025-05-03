@@ -43,6 +43,8 @@ public class HomeCompletedTask extends AppCompatActivity {
         rvTaskList.setAdapter(adapter);
 
         findViewById(R.id.ivReturnCompletedTask).setOnClickListener(v -> {
+            Intent intent = new Intent(HomeCompletedTask.this, ActivityMain.class);
+            startActivity(intent);
             finish();
         });
 
