@@ -118,7 +118,7 @@
             android:layout_height="44dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/modal"
+            android:background="@drawable/task_duration"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCTLabel" />
 
