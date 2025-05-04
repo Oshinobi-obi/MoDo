@@ -37,7 +37,7 @@
                     android:id="@+id/tvCurrentPoints"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current Points: 505 pts"
+                    android:text="Current Points: --- pts"
                     android:textColor="#3b3b3b"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"

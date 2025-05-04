@@ -79,7 +79,6 @@ public class ActivityMain extends AppCompatActivity {
             }
         }
 
-
         fabAddTask1.setOnClickListener(v -> showAddTaskModal());
     }
 

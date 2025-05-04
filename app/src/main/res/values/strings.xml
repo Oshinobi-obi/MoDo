@@ -118,7 +118,7 @@
 
     <!--R-->
     <string name="RemoveTask">Remove Task</string>
-    <string name="Reschedule">Reschedule</string>
+    <string name="Reschedule">Extend 15 mns.</string>
     <string name="Rewards">Rewards</string>
 
     <!--S-->

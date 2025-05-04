@@ -11,11 +11,12 @@ public class AddTask {
     private String status;
     private Timestamp timestamp;
     private String duration;
+    private Long endTime;          // 🆕 for countdown logic
 
-    // 🆕 Default empty constructor (important for Firestore)
-    public AddTask() {}
+    public AddTask() {
+        // Required for Firestore deserialization
+    }
 
-    // 🆕 Full constructor (optional, when you create a new task)
     public AddTask(String title, String description, String priority, String label, String deadline, String duration) {
         this.title = title;
         this.description = description;
@@ -27,71 +28,25 @@ public class AddTask {
         this.timestamp = Timestamp.now();
     }
 
-    // 🆕 Setters (important for Firestore to set values)
+    // Getters
+    public String getTitle() { return title; }
+    public String getDuration() { return duration; }
+    public String getDescription() { return description; }
+    public String getPriority() { return priority; }
+    public String getLabel() { return label; }
+    public String getDeadline() { return deadline; }
+    public String getStatus() { return status; }
+    public Timestamp getTimestamp() { return timestamp; }
+    public Long getEndTime() { return endTime; }         // 🆕
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    // 🆕 Getters
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getDeadline() {
-        return deadline;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
+    // Setters
+    public void setTitle(String title) { this.title = title; }
+    public void setDuration(String duration) { this.duration = duration; }
+    public void setDescription(String description) { this.description = description; }
+    public void setPriority(String priority) { this.priority = priority; }
+    public void setLabel(String label) { this.label = label; }
+    public void setDeadline(String deadline) { this.deadline = deadline; }
+    public void setStatus(String status) { this.status = status; }
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
+    public void setEndTime(Long endTime) { this.endTime = endTime; } // 🆕
 }

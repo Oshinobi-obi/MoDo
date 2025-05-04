@@ -128,12 +128,26 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:text="@string/TaskDuration"
+            android:textColor="#3b3b3b"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/rectangle4"
             app:layout_constraintEnd_toEndOf="@+id/rectangle4"
             app:layout_constraintStart_toStartOf="@+id/rectangle4"
             app:layout_constraintTop_toTopOf="@+id/rectangle4" />
 
+        <TextView
+            android:id="@+id/tvRecommendedAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/poppins"
+            android:text="Recommended Action: -"
+            android:textColor="#3b3b3b"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@+id/rectangle4"
+            app:layout_constraintTop_toBottomOf="@+id/rectangle4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

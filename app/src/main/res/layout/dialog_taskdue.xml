@@ -1,51 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/modal"
+        android:background="@drawable/task_current"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/tvRecommendedAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Recommended Action: ..."
+            android:textColor="#3b3b3b"
+            android:textStyle="italic"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textAlignment="center" />
+
         <Button
-            android:id="@+id/btnDone3"
-            android:layout_width="179dp"
+            android:id="@+id/btnExtend"
+            android:layout_width="150dp"
             android:layout_height="48dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="28dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="#DBDAE1"
+            android:backgroundTint="#008000"
             android:fontFamily="@font/poppins"
             android:text="@string/Reschedule"
-            android:textColor="#313037"
+            android:textColor="#FFFFFF"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
             app:strokeColor="#FFFFFF"
             app:strokeWidth="1dp" />
 
         <Button
-            android:id="@+id/btnDone2"
-            android:layout_width="179dp"
+            android:id="@+id/btnMarkComplete"
+            android:layout_width="150dp"
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="#313037"
             android:fontFamily="@font/poppins"
-            android:text="@string/MarkComplete"
+            android:text="Complete"
             android:textColor="#ffffff"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            app:layout_constraintStart_toEndOf="@+id/btnExtend"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:ignore="TextSizeCheck" />
 
         <TextView
             android:id="@+id/textView6"
@@ -54,7 +71,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
-            android:text="This task has reached the deadline. Do you want to reschedule it or Mark it as Complete?"
+            android:text="This task has reached the duration. Do you want to Extend it or mark it as Complete?"
+            android:textAlignment="center"
+            android:textColor="#3b3b3b"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +86,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/poppins"
             android:text="@string/NotificationAlert"
+            android:textColor="#3b3b3b"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

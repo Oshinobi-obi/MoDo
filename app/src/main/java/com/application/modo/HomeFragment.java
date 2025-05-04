@@ -1,7 +1,9 @@
 package com.application.modo;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,16 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Set;
 
 public class HomeFragment extends Fragment {
 
@@ -31,7 +41,9 @@ public class HomeFragment extends Fragment {
     private AddTask missedTask;
     private ConstraintLayout clMissedTask;
     private TextView tvMissedTaskTitle, tvMissedTaskDescription, tvMissedTaskDeadline;
-
+    private Handler countdownHandler = new Handler();
+    private Runnable countdownRunnable;
+    private boolean isTaskDueDialogShown = false;
 
     private final Map<String, Integer> avatarMap = new HashMap<>() {{
         put("bear", R.drawable.bear);
@@ -130,6 +142,186 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void addPointsAndCheckRewards(String uid, String taskTitle, String dateString, int pointsEarned) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> newPoint = new HashMap<>();
+        newPoint.put("title", taskTitle);
+        newPoint.put("date", dateString);
+        newPoint.put("points", "+" + pointsEarned + " points");
+
+        db.collection("users").document(uid)
+                .collection("profile_points")
+                .add(newPoint)
+                .addOnSuccessListener(docRef -> {
+                    db.collection("users").document(uid)
+                            .collection("profile_points")
+                            .get()
+                            .addOnSuccessListener(snapshot -> {
+                                int totalPoints = 0;
+                                for (QueryDocumentSnapshot doc : snapshot) {
+                                    String pointsStr = doc.getString("points") != null ? doc.getString("points") : "0";
+                                    totalPoints += extractPoints(pointsStr);
+                                }
+                                unlockRewardsIfNeeded(uid, totalPoints);
+                            });
+                });
+    }
+
+    private int extractPoints(String str) {
+        try {
+            return Integer.parseInt(str.replaceAll("[^\\d]", ""));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void unlockRewardsIfNeeded(String uid, int totalPoints) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        List<ProfileRewardsItem> rewards = new ArrayList<>();
+
+        if (totalPoints >= 200)
+            rewards.add(new ProfileRewardsItem("Bear", "Strong and steady fighter", "(Milestone: 200 pts)"));
+        if (totalPoints >= 250)
+            rewards.add(new ProfileRewardsItem("Cat", "Graceful, calm, always curious", "(Milestone: 250 pts)"));
+        if (totalPoints >= 300)
+            rewards.add(new ProfileRewardsItem("Chicken", "Small but brave spirit", "(Milestone: 300 pts)"));
+        if (totalPoints >= 350)
+            rewards.add(new ProfileRewardsItem("Dog", "Loyal and fearless friend", "(Milestone: 350 pts)"));
+        if (totalPoints >= 400)
+            rewards.add(new ProfileRewardsItem("Gorilla", "Strong leader, kind heart", "(Milestone: 400 pts)"));
+        if (totalPoints >= 450)
+            rewards.add(new ProfileRewardsItem("Owl", "Wise eyes see everything", "(Milestone: 450 pts)"));
+        if (totalPoints >= 500)
+            rewards.add(new ProfileRewardsItem("Panda", "Gentle soul, peaceful warrior", "(Milestone: 500 pts)"));
+        if (totalPoints >= 550)
+            rewards.add(new ProfileRewardsItem("Rabbit", "Fast and clever jumper", "(Milestone: 550 pts)"));
+        if (totalPoints >= 600)
+            rewards.add(new ProfileRewardsItem("Sealion", "Playful, bold sea explorer", "(Milestone: 600 pts)"));
+
+        for (ProfileRewardsItem reward : rewards) {
+            db.collection("users").document(uid)
+                    .collection("profile_rewards")
+                    .whereEqualTo("name", reward.getName())
+                    .get()
+                    .addOnSuccessListener(snap -> {
+                        if (snap.isEmpty()) {
+                            db.collection("users").document(uid)
+                                    .update("unlockedRewards", com.google.firebase.firestore.FieldValue.arrayUnion(reward.getName()));
+                            db.collection("users").document(uid)
+                                    .collection("profile_rewards")
+                                    .add(reward);
+                        }
+                    });
+        }
+    }
+
+    private void startCountdownTimer(TextView tvTaskDuration, long endTime, Runnable onFinish) {
+        countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long millisLeft = endTime - System.currentTimeMillis();
+
+                if (millisLeft > 0) {
+                    long hours = (millisLeft / (1000 * 60 * 60)) % 24;
+                    long minutes = (millisLeft / (1000 * 60)) % 60;
+                    long seconds = (millisLeft / 1000) % 60;
+
+                    tvTaskDuration.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+                    countdownHandler.postDelayed(this, 1000);
+                } else {
+                    tvTaskDuration.setText("00:00:00");
+                    countdownHandler.removeCallbacks(this);
+                    onFinish.run();
+                }
+            }
+        };
+
+        countdownHandler.post(countdownRunnable);
+    }
+
+    private void showTaskDueDialog(String uid, String taskId, long currentEndTime, MediaPlayer mediaPlayer) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taskdue, null);
+        AlertDialog dueDialog = new AlertDialog.Builder(requireContext()).setView(view).create();
+        if (dueDialog.getWindow() != null)
+            dueDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        Button btnExtend = view.findViewById(R.id.btnExtend);
+        Button btnMarkComplete = view.findViewById(R.id.btnMarkComplete);
+        TextView tvRecommendedAction = view.findViewById(R.id.tvRecommendedAction);
+
+        QAgent qAgent = new QAgent();
+        qAgent.loadQTableFromFirestore();
+
+        String priority = currentTask.getPriority();
+        String currentState = "Due|" + priority;
+
+        String suggestedAction = qAgent.chooseBestAction(currentState);
+        tvRecommendedAction.setText("Recommended Action: " + suggestedAction);
+
+        View.OnClickListener stopAlarmAndDismiss = v -> {
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            }
+            dueDialog.dismiss();
+        };
+
+        btnExtend.setOnClickListener(v -> {
+            String action = "Extend";
+            double reward = 5.0;
+            String nextState = "Ongoing|" + priority;
+
+            long newEndTime = System.currentTimeMillis() + (15 * 60 * 1000);
+            db.collection("users").document(uid).collection("tasks").document(taskId)
+                    .update("endTime", newEndTime)
+                    .addOnSuccessListener(aVoid -> {
+                        qAgent.updateQValue(currentState, action, reward, nextState);
+
+                        Toast.makeText(getContext(), "Extended 15 minutes", Toast.LENGTH_SHORT).show();
+                        stopAlarmAndDismiss.onClick(v);
+                        fetchCurrentTask(uid);
+
+                        TextView tvTaskDuration = ongoingTaskDialog.findViewById(R.id.tvTaskDuration);
+                        if (tvTaskDuration != null) {
+                            startCountdownTimer(tvTaskDuration, newEndTime, () -> {
+                                if (!isTaskDueDialogShown) {
+                                    isTaskDueDialogShown = true;
+                                    MediaPlayer mp = MediaPlayer.create(requireContext(), R.raw.alarm);
+                                    mp.setLooping(true);
+                                    mp.start();
+                                    showTaskDueDialog(uid, taskId, newEndTime, mp);
+                                }
+                            });
+                        }
+                    });
+        });
+
+        btnMarkComplete.setOnClickListener(v -> {
+            String action = "Complete";
+            double reward = 10.0;
+            String nextState = "Idle";
+
+            countdownHandler.removeCallbacks(countdownRunnable);
+            long now = System.currentTimeMillis();
+            long remaining = Math.max(currentEndTime - now, 0);
+            String formatted = formatMillisToDuration(remaining);
+
+            db.collection("users").document(uid).collection("tasks").document(taskId)
+                    .update("status", "Completed", "endTime", now, "duration", formatted)
+                    .addOnSuccessListener(aVoid -> {
+                        qAgent.updateQValue(currentState, action, reward, nextState);
+
+                        Toast.makeText(getContext(), "Task marked as completed!", Toast.LENGTH_SHORT).show();
+                        stopAlarmAndDismiss.onClick(v);
+                        if (ongoingTaskDialog != null) ongoingTaskDialog.dismiss();
+                        fetchCompletedTask(uid);
+                        fetchCurrentTask(uid);
+                    });
+        });
+
+        dueDialog.show();
     }
 
     private void fetchCurrentTask(String uid) {
@@ -321,6 +513,10 @@ public class HomeFragment extends Fragment {
         btnDone.setOnClickListener(v -> {
             if (mAuth.getCurrentUser() != null) {
                 String uid = mAuth.getCurrentUser().getUid();
+
+                long durationInMillis = parseDuration(upcomingTask.getDuration()); // parse "HH:mm:ss"
+                long endTime = System.currentTimeMillis() + durationInMillis;
+
                 db.collection("users").document(uid).collection("tasks")
                         .whereEqualTo("title", upcomingTask.getTitle())
                         .whereEqualTo("description", upcomingTask.getDescription())
@@ -333,20 +529,44 @@ public class HomeFragment extends Fragment {
                                 String docId = querySnapshot.getDocuments().get(0).getId();
                                 db.collection("users").document(uid).collection("tasks")
                                         .document(docId)
-                                        .update("status", "Ongoing")
+                                        .update(
+                                                "status", "Ongoing",
+                                                "endTime", endTime
+                                        )
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(getContext(), "Task started!", Toast.LENGTH_SHORT).show();
                                             upcomingTaskDialog.dismiss();
                                             fetchUpcomingTask(uid);
                                             fetchCurrentTask(uid);
                                         })
-                                        .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to update task.", Toast.LENGTH_SHORT).show());
+                                        .addOnFailureListener(e ->
+                                                Toast.makeText(getContext(), "Failed to update task.", Toast.LENGTH_SHORT).show());
                             }
                         });
             }
         });
 
         upcomingTaskDialog.show();
+    }
+
+    private long parseDuration(String durationStr) {
+        try {
+            String[] parts = durationStr.split(":");
+            long hours = Long.parseLong(parts[0]);
+            long minutes = Long.parseLong(parts[1]);
+            long seconds = Long.parseLong(parts[2]);
+            return (hours * 3600 + minutes * 60 + seconds) * 1000;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private String formatMillisToDuration(long millis) {
+        long seconds = millis / 1000;
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
     }
 
     private void showOngoingTaskDialog() {
@@ -361,6 +581,8 @@ public class HomeFragment extends Fragment {
         TextView tvCTTaskDescription = view.findViewById(R.id.tvCTTaskDescription);
         TextView tvCTDeadlineDuration = view.findViewById(R.id.tvCTDeadlineDuration);
         TextView tvCTLabel = view.findViewById(R.id.tvCTLabel);
+        TextView tvTaskDuration = view.findViewById(R.id.tvTaskDuration);
+        TextView tvRecommendedAction = view.findViewById(R.id.tvRecommendedAction);
         Button btnTaskSettings = view.findViewById(R.id.btnTaskSettings);
         Button btnDone = view.findViewById(R.id.btnDone);
 
@@ -369,9 +591,30 @@ public class HomeFragment extends Fragment {
         tvCTDeadlineDuration.setText("Deadline: " + currentTask.getDeadline());
         tvCTLabel.setText("Label: " + currentTask.getLabel());
 
-        btnDone.setOnClickListener(v -> {
-            if (mAuth.getCurrentUser() != null && currentTask != null) {
-                String uid = mAuth.getCurrentUser().getUid();
+        String uid = mAuth.getCurrentUser().getUid();
+        Long endTimeObj = currentTask.getEndTime();
+        if (endTimeObj == null) {
+            Toast.makeText(getContext(), "Task end time is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final long finalEndTime = endTimeObj;
+        isTaskDueDialogShown = false;
+
+        QAgent qAgent = new QAgent();
+        qAgent.loadQTableFromFirestore();
+        String currentState = "Ongoing|" + currentTask.getPriority();
+
+        String suggestedAction = qAgent.chooseBestAction(currentState);
+        tvRecommendedAction.setText("Recommended Action: " + suggestedAction);
+
+        startCountdownTimer(tvTaskDuration, finalEndTime, () -> {
+            if (!isTaskDueDialogShown) {
+                isTaskDueDialogShown = true;
+                MediaPlayer mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alarm);
+                mediaPlayer.setLooping(true);
+                mediaPlayer.start();
+
                 db.collection("users").document(uid).collection("tasks")
                         .whereEqualTo("title", currentTask.getTitle())
                         .whereEqualTo("description", currentTask.getDescription())
@@ -379,26 +622,52 @@ public class HomeFragment extends Fragment {
                         .limit(1)
                         .get()
                         .addOnSuccessListener(querySnapshot -> {
-                            if (!isAdded()) return; // ✅
                             if (!querySnapshot.isEmpty()) {
                                 String docId = querySnapshot.getDocuments().get(0).getId();
-                                db.collection("users").document(uid).collection("tasks")
-                                        .document(docId)
-                                        .update("status", "Completed")
-                                        .addOnSuccessListener(aVoid -> {
-                                            if (!isAdded()) return; // ✅
-                                            Toast.makeText(getContext(), "Task marked as completed!", Toast.LENGTH_SHORT).show();
-                                            ongoingTaskDialog.dismiss();
-                                            fetchCurrentTask(uid);
-                                            fetchCompletedTask(uid);
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            if (!isAdded()) return; // ✅
-                                            Toast.makeText(getContext(), "Failed to update task.", Toast.LENGTH_SHORT).show();
-                                        });
+                                showTaskDueDialog(uid, docId, finalEndTime, mediaPlayer);
                             }
                         });
             }
+        });
+
+        btnDone.setOnClickListener(v -> {
+            countdownHandler.removeCallbacks(countdownRunnable);
+
+            db.collection("users").document(uid).collection("tasks")
+                    .whereEqualTo("title", currentTask.getTitle())
+                    .whereEqualTo("description", currentTask.getDescription())
+                    .whereEqualTo("deadline", currentTask.getDeadline())
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        if (!querySnapshot.isEmpty()) {
+                            String docId = querySnapshot.getDocuments().get(0).getId();
+                            long now = System.currentTimeMillis();
+                            long remaining = Math.max(finalEndTime - now, 0);
+                            String formatted = formatMillisToDuration(remaining);
+
+                            db.collection("users").document(uid).collection("tasks")
+                                    .document(docId)
+                                    .update("status", "Completed", "endTime", now, "duration", formatted)
+                                    .addOnSuccessListener(aVoid -> {
+                                        qAgent.updateQValue(currentState, "Complete", 10.0, "Idle");
+
+                                        int rewardPoints = currentTask.getPriority().equals("High") ? 10 :
+                                                currentTask.getPriority().equals("Medium") ? 7 : 5;
+
+                                        String date = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date());
+                                        addPointsAndCheckRewards(uid, currentTask.getTitle(), date, rewardPoints);
+
+                                        Toast.makeText(getContext(), "Task marked as completed!", Toast.LENGTH_SHORT).show();
+                                        ongoingTaskDialog.dismiss();
+                                        fetchCurrentTask(uid);
+                                        fetchCompletedTask(uid);
+                                        checkAndUpdateBadges(uid);
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(getContext(), "Failed to update task.", Toast.LENGTH_SHORT).show());
+                        }
+                    });
         });
 
         btnTaskSettings.setOnClickListener(v -> {
@@ -407,6 +676,40 @@ public class HomeFragment extends Fragment {
         });
 
         ongoingTaskDialog.show();
+    }
+
+    private void checkAndUpdateBadges(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(uid).collection("tasks")
+                .whereEqualTo("status", "Completed")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    int completedCount = snapshot.size();
+
+                    List<String> earned = new ArrayList<>();
+                    if (completedCount >= 5) earned.add("Beginner");
+                    if (completedCount >= 10) earned.add("Apprentice");
+                    if (completedCount >= 20) earned.add("Achiever");
+                    if (completedCount >= 30) earned.add("Bookworm");
+                    if (completedCount >= 50) earned.add("Go-Getter");
+                    if (completedCount >= 75) earned.add("Honor Student");
+                    if (completedCount >= 100) earned.add("Overachiever");
+                    if (completedCount >= 150) earned.add("Cum Laude");
+                    if (completedCount >= 200) earned.add("Valedictorian");
+
+                    db.collection("users").document(uid)
+                            .get()
+                            .addOnSuccessListener(userSnap -> {
+                                List<String> existing = (List<String>) userSnap.get("profile_badges");
+                                if (existing == null) existing = new ArrayList<>();
+
+                                Set<String> newSet = new HashSet<>(existing);
+                                newSet.addAll(earned); // Avoid duplicates
+
+                                db.collection("users").document(uid)
+                                        .update("profile_badges", new ArrayList<>(newSet));
+                            });
+                });
     }
 
     private void showCompletedTaskDialog() {
