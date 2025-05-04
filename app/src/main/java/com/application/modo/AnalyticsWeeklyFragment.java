@@ -69,22 +69,22 @@ public class AnalyticsWeeklyFragment extends Fragment {
         sdf.setTimeZone(phTimeZone);
         deadlineFormat.setTimeZone(phTimeZone);
 
-        // Generate current week (last 7 days ending yesterday)
+        // Generate current week (last 7 days including today)
         List<String> last7Days = new ArrayList<>();
         Calendar calendar = Calendar.getInstance(phTimeZone);
-        calendar.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+        calendar.add(Calendar.DAY_OF_YEAR, -6); // start 6 days ago
         for (int i = 0; i < 7; i++) {
-            last7Days.add(0, sdf.format(calendar.getTime()));
-            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            last7Days.add(sdf.format(calendar.getTime()));
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        // Generate previous 7 days
+        // Generate previous 7 days (ending the day before last7Days starts)
         List<String> previous7Days = new ArrayList<>();
         Calendar prevCalendar = Calendar.getInstance(phTimeZone);
-        prevCalendar.add(Calendar.DAY_OF_YEAR, -8);
+        prevCalendar.add(Calendar.DAY_OF_YEAR, -13); // start 13 days ago
         for (int i = 0; i < 7; i++) {
-            previous7Days.add(0, sdf.format(prevCalendar.getTime()));
-            prevCalendar.add(Calendar.DAY_OF_YEAR, -1);
+            previous7Days.add(sdf.format(prevCalendar.getTime()));
+            prevCalendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 
         int[] completedCounts = new int[7];
@@ -338,8 +338,7 @@ public class AnalyticsWeeklyFragment extends Fragment {
         List<Entry> entries = new ArrayList<>();
 
         for (int i = 0; i < 7; i++) {
-            float score = 1f
-                    + (highCompleted[i] * 1.2f + mediumCompleted[i] * 1.1f + lowCompleted[i] * 1.1f)
+            float score = (highCompleted[i] * 1.2f + mediumCompleted[i] * 1.1f + lowCompleted[i] * 1.1f)
                     - (highMissed[i] * 1.2f + mediumMissed[i] * 1.1f + lowMissed[i] * 1.0f);
             entries.add(new Entry(i, score));
         }
@@ -404,10 +403,10 @@ public class AnalyticsWeeklyFragment extends Fragment {
 
         private String[] generateLast7Days() {
             String[] days = new String[7];
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd", Locale.ENGLISH);
             dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
-            calendar.add(Calendar.DAY_OF_YEAR, -7); // start from 7 days ago to end yesterday
+            calendar.add(Calendar.DAY_OF_YEAR, -6); // start from 6 days ago up to today
 
             for (int i = 0; i < 7; i++) {
                 days[i] = dateFormat.format(calendar.getTime());
