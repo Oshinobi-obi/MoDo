@@ -3,6 +3,7 @@ package com.application.modo;
 import com.google.firebase.Timestamp;
 
 public class AddTask {
+    private String id;
     private String title;
     private String description;
     private String priority;
@@ -29,6 +30,7 @@ public class AddTask {
     }
 
     // Getters
+    public String getId() { return id; }
     public String getTitle() { return title; }
     public String getDuration() { return duration; }
     public String getDescription() { return description; }
@@ -40,6 +42,7 @@ public class AddTask {
     public Long getEndTime() { return endTime; }         // 🆕
 
     // Setters
+    public void setId(String id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
     public void setDuration(String duration) { this.duration = duration; }
     public void setDescription(String description) { this.description = description; }
@@ -48,5 +51,5 @@ public class AddTask {
     public void setDeadline(String deadline) { this.deadline = deadline; }
     public void setStatus(String status) { this.status = status; }
     public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
-    public void setEndTime(Long endTime) { this.endTime = endTime; } // 🆕
+    public void setEndTime(Long endTime) { this.endTime = endTime; }     // 🆕
 }

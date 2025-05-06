@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class HomeFragment extends Fragment {
             db.collection("users").document(uid)
                     .get()
                     .addOnSuccessListener(document -> {
-                        if (!isAdded()) return; // ✅
+                        if (!isAdded()) return;
                         if (document.exists()) {
                             String username = document.getString("username");
                             tvUsername3.setText(getString(R.string.welcome_user, username));
@@ -102,6 +103,10 @@ public class HomeFragment extends Fragment {
                             if (avatarName == null || avatarName.isEmpty()) avatarName = "default_avatar";
                             int resId = avatarMap.getOrDefault(avatarName, R.drawable.default_avatar);
                             imgvPicture1.setImageResource(resId);
+                            
+                            // Schedule tasks before fetching them
+                            scheduleTasks(uid);
+                            
                             fetchCurrentTask(uid);
                             fetchCompletedTask(uid);
                             fetchUpcomingTask(uid);
@@ -112,7 +117,7 @@ public class HomeFragment extends Fragment {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        if (!isAdded()) return; // ✅
+                        if (!isAdded()) return;
                         tvUsername3.setText(getString(R.string.welcome_default));
                         imgvPicture1.setImageResource(R.drawable.default_avatar);
                     });
@@ -333,8 +338,10 @@ public class HomeFragment extends Fragment {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!isAdded()) return; // ✅
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        currentTask = queryDocumentSnapshots.getDocuments().get(0).toObject(AddTask.class);
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+                        currentTask = doc.toObject(AddTask.class);
                         if (currentTask != null) {
+                            currentTask.setId(doc.getId());
                             tvCurrentTaskTitle.setText(currentTask.getTitle());
                             tvCurrentTaskDescription.setText(currentTask.getDescription());
                             tvCurrentTaskDeadline.setText(currentTask.getDeadline());
@@ -361,8 +368,10 @@ public class HomeFragment extends Fragment {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!isAdded()) return; // ✅
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        completedTask = queryDocumentSnapshots.getDocuments().get(0).toObject(AddTask.class);
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+                        completedTask = doc.toObject(AddTask.class);
                         if (completedTask != null) {
+                            completedTask.setId(doc.getId());
                             tvTaskTitle1.setText(completedTask.getTitle());
                             tvTaskDescription1.setText(completedTask.getDescription());
                             tvTaskDeadline.setText(completedTask.getDeadline());
@@ -388,8 +397,10 @@ public class HomeFragment extends Fragment {
                 .addOnSuccessListener(querySnapshot -> {
                     if (!isAdded()) return;
                     if (!querySnapshot.isEmpty()) {
-                        upcomingTask = querySnapshot.getDocuments().get(0).toObject(AddTask.class);
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
+                        upcomingTask = doc.toObject(AddTask.class);
                         if (upcomingTask != null) {
+                            upcomingTask.setId(doc.getId());
                             clUpcomingTask.setVisibility(View.VISIBLE);
                             tvUpcomingTaskTitle.setText(upcomingTask.getTitle());
                             tvUpcomingTaskDescription.setText(upcomingTask.getDescription());
@@ -416,8 +427,10 @@ public class HomeFragment extends Fragment {
                 .addOnSuccessListener(querySnapshot -> {
                     if (!isAdded()) return;
                     if (!querySnapshot.isEmpty()) {
-                        missedTask = querySnapshot.getDocuments().get(0).toObject(AddTask.class);
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
+                        missedTask = doc.toObject(AddTask.class);
                         if (missedTask != null) {
+                            missedTask.setId(doc.getId());
                             clMissedTask.setVisibility(View.VISIBLE);
                             tvMissedTaskTitle.setText(missedTask.getTitle());
                             tvMissedTaskDescription.setText(missedTask.getDescription());
@@ -655,7 +668,7 @@ public class HomeFragment extends Fragment {
                                         int rewardPoints = currentTask.getPriority().equals("High") ? 10 :
                                                 currentTask.getPriority().equals("Medium") ? 7 : 5;
 
-                                        String date = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date());
+                                        String date = new SimpleDateFormat("M/dd/yyyy", Locale.getDefault()).format(new Date());
                                         addPointsAndCheckRewards(uid, currentTask.getTitle(), date, rewardPoints);
 
                                         Toast.makeText(getContext(), "Task marked as completed!", Toast.LENGTH_SHORT).show();
@@ -739,5 +752,132 @@ public class HomeFragment extends Fragment {
         btnDone.setOnClickListener(v -> completedTaskDialog.dismiss());
 
         completedTaskDialog.show();
+    }
+
+    private void scheduleTasks(String uid) {
+        db.collection("users").document(uid).collection("tasks")
+                .whereIn("status", List.of("Upcoming", "Ongoing"))
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<AddTask> tasks = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        AddTask task = doc.toObject(AddTask.class);
+                        if (task != null) {
+                            task.setId(doc.getId());
+                            tasks.add(task);
+                        }
+                    }
+                    
+                    // Sort tasks using hybrid scheduling algorithm
+                    List<AddTask> scheduledTasks = hybridSchedule(tasks);
+                    
+                    // Update task order in Firestore
+                    for (int i = 0; i < scheduledTasks.size(); i++) {
+                        AddTask task = scheduledTasks.get(i);
+                        String taskId = task.getId();
+                        if (taskId != null) {
+                            db.collection("users").document(uid).collection("tasks")
+                                    .document(taskId)
+                                    .update("order", i)
+                                    .addOnFailureListener(e -> 
+                                        Log.e("HomeFragment", "Failed to update task order", e)
+                                    );
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> 
+                    Log.e("HomeFragment", "Failed to fetch tasks for scheduling", e)
+                );
+    }
+
+    private List<AddTask> hybridSchedule(List<AddTask> tasks) {
+        // Greedy phase: Sort by priority and deadline
+        tasks.sort((t1, t2) -> {
+            // First compare by priority
+            int priorityCompare = getPriorityWeight(t2.getPriority()) - getPriorityWeight(t1.getPriority());
+            if (priorityCompare != 0) return priorityCompare;
+            
+            // Then compare by deadline
+            return t1.getDeadline().compareTo(t2.getDeadline());
+        });
+
+        // Dynamic phase: Adjust based on user behavior and task characteristics
+        List<AddTask> scheduledTasks = new ArrayList<>(tasks);
+        QAgent qAgent = new QAgent();
+        qAgent.loadQTableFromFirestore();
+
+        for (int i = 0; i < scheduledTasks.size(); i++) {
+            AddTask task = scheduledTasks.get(i);
+            String state = task.getStatus() + "|" + task.getPriority();
+            String suggestedAction = qAgent.chooseBestAction(state);
+            
+            // Adjust task order based on ML suggestions
+            if (suggestedAction.equals("Reschedule")) {
+                // Move task to a more appropriate position
+                int newPosition = calculateOptimalPosition(scheduledTasks, task, i);
+                if (newPosition != i) {
+                    scheduledTasks.remove(i);
+                    scheduledTasks.add(newPosition, task);
+                }
+            }
+        }
+
+        return scheduledTasks;
+    }
+
+    private int getPriorityWeight(String priority) {
+        switch (priority) {
+            case "High": return 3;
+            case "Medium": return 2;
+            case "Low": return 1;
+            default: return 0;
+        }
+    }
+
+    private int calculateOptimalPosition(List<AddTask> tasks, AddTask task, int currentPosition) {
+        // Consider task duration, user's historical completion rate, and current workload
+        double taskScore = calculateTaskScore(task);
+        
+        for (int i = 0; i < tasks.size(); i++) {
+            if (i == currentPosition) continue;
+            
+            double currentScore = calculateTaskScore(tasks.get(i));
+            if (taskScore > currentScore) {
+                return i;
+            }
+        }
+        
+        return currentPosition;
+    }
+
+    private double calculateTaskScore(AddTask task) {
+        double score = 0;
+        
+        // Priority weight
+        score += getPriorityWeight(task.getPriority()) * 2;
+        
+        // Deadline urgency
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("M/dd/yyyy h:mm a", Locale.ENGLISH);
+            Date deadline = sdf.parse(task.getDeadline());
+            long timeUntilDeadline = deadline.getTime() - System.currentTimeMillis();
+            score += 1.0 / (timeUntilDeadline / (1000 * 60 * 60)); // Hours until deadline
+        } catch (Exception e) {
+            Log.e("HomeFragment", "Error parsing deadline", e);
+        }
+        
+        // Task duration impact
+        String duration = task.getDuration();
+        if (duration != null) {
+            try {
+                String[] parts = duration.split(":");
+                int hours = Integer.parseInt(parts[0]);
+                score -= hours * 0.5; // Longer tasks get slightly lower priority
+            } catch (Exception e) {
+                Log.e("HomeFragment", "Error parsing duration", e);
+            }
+        }
+        
+        return score;
     }
 }
