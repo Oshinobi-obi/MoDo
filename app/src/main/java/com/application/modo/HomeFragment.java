@@ -44,6 +44,7 @@ public class HomeFragment extends Fragment {
     private TextView tvMissedTaskTitle, tvMissedTaskDescription, tvMissedTaskDeadline;
     private Handler countdownHandler = new Handler();
     private Runnable countdownRunnable;
+    private QAgent qAgent;
     private boolean isTaskDueDialogShown = false;
 
     private final Map<String, Integer> avatarMap = new HashMap<>() {{
@@ -67,6 +68,9 @@ public class HomeFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+        qAgent = new QAgent();
+        qAgent.loadQTableFromFirestore();
 
         tvUsername3 = view.findViewById(R.id.tvUsername3);
         imgvPicture1 = view.findViewById(R.id.imgvPicture1);
@@ -106,7 +110,6 @@ public class HomeFragment extends Fragment {
                             
                             // Schedule tasks before fetching them
                             scheduleTasks(uid);
-                            
                             fetchCurrentTask(uid);
                             fetchCompletedTask(uid);
                             fetchUpcomingTask(uid);
@@ -256,9 +259,6 @@ public class HomeFragment extends Fragment {
         Button btnMarkComplete = view.findViewById(R.id.btnMarkComplete);
         TextView tvRecommendedAction = view.findViewById(R.id.tvRecommendedAction);
 
-        QAgent qAgent = new QAgent();
-        qAgent.loadQTableFromFirestore();
-
         String priority = currentTask.getPriority();
         String currentState = "Due|" + priority;
 
@@ -275,7 +275,7 @@ public class HomeFragment extends Fragment {
 
         btnExtend.setOnClickListener(v -> {
             String action = "Extend";
-            double reward = 5.0;
+            double reward = qAgent.calculateReward(currentTask.getPriority(), "Extended");
             String nextState = "Ongoing|" + priority;
 
             long newEndTime = System.currentTimeMillis() + (15 * 60 * 1000);
@@ -305,7 +305,6 @@ public class HomeFragment extends Fragment {
 
         btnMarkComplete.setOnClickListener(v -> {
             String action = "Complete";
-            double reward = 10.0;
             String nextState = "Idle";
 
             countdownHandler.removeCallbacks(countdownRunnable);
@@ -316,6 +315,7 @@ public class HomeFragment extends Fragment {
             db.collection("users").document(uid).collection("tasks").document(taskId)
                     .update("status", "Completed", "endTime", now, "duration", formatted)
                     .addOnSuccessListener(aVoid -> {
+                        double reward = qAgent.calculateReward(currentTask.getPriority(), "Completed");
                         qAgent.updateQValue(currentState, action, reward, nextState);
 
                         Toast.makeText(getContext(), "Task marked as completed!", Toast.LENGTH_SHORT).show();
@@ -614,8 +614,6 @@ public class HomeFragment extends Fragment {
         final long finalEndTime = endTimeObj;
         isTaskDueDialogShown = false;
 
-        QAgent qAgent = new QAgent();
-        qAgent.loadQTableFromFirestore();
         String currentState = "Ongoing|" + currentTask.getPriority();
 
         String suggestedAction = qAgent.chooseBestAction(currentState);
@@ -663,7 +661,8 @@ public class HomeFragment extends Fragment {
                                     .document(docId)
                                     .update("status", "Completed", "endTime", now, "duration", formatted)
                                     .addOnSuccessListener(aVoid -> {
-                                        qAgent.updateQValue(currentState, "Complete", 10.0, "Idle");
+                                        double reward = qAgent.calculateReward(currentTask.getPriority(), "Completed");
+                                        qAgent.updateQValue(currentState, "Complete", reward, "Idle");
 
                                         int rewardPoints = currentTask.getPriority().equals("High") ? 10 :
                                                 currentTask.getPriority().equals("Medium") ? 7 : 5;
@@ -877,7 +876,6 @@ public class HomeFragment extends Fragment {
                 Log.e("HomeFragment", "Error parsing duration", e);
             }
         }
-        
         return score;
     }
 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.graphics.Color;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -18,7 +17,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -195,8 +193,6 @@ public class AnalyticsOverallFragment extends Fragment {
                     }
                 });
     }
-
-
 
     private void setupBarChart(int[] completed, int[] missed) {
         List<BarEntry> completedEntries = new ArrayList<>();

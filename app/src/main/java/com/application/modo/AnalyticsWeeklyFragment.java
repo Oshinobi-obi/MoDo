@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.fragment.app.Fragment;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -18,7 +16,6 @@ import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,7 +27,6 @@ public class AnalyticsWeeklyFragment extends Fragment {
     private PieChart pieChart;
     private TextView tvWeeklyCompletedTask1, tvWeeklyMissedTask1, tvWeeklyCurrentCompletionRate1, tvWeeklyPreviousCompletionRate1, tvWeeklyCompletionComparison1;
     private TextView tvMostProductiveDay1, tvLeastProductiveDay1, tvWeeklyProductivityScore1;
-
 
     public AnalyticsWeeklyFragment() {}
 
@@ -50,12 +46,10 @@ public class AnalyticsWeeklyFragment extends Fragment {
         tvLeastProductiveDay1 = view.findViewById(R.id.tvLeastProductiveDay1);
         tvWeeklyProductivityScore1 = view.findViewById(R.id.tvWeeklyProductivityScore1);
 
-
         fetchWeeklyTaskStats(); // ✅ this handles chart setup dynamically
 
         return view;
     }
-
 
     private void fetchWeeklyTaskStats() {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
@@ -332,7 +326,6 @@ public class AnalyticsWeeklyFragment extends Fragment {
         pieChart.invalidate();
     }
 
-
     private void setupLineChartWeekly(int[] highCompleted, int[] mediumCompleted, int[] lowCompleted,
                                       int[] highMissed, int[] mediumMissed, int[] lowMissed) {
         List<Entry> entries = new ArrayList<>();
@@ -372,7 +365,6 @@ public class AnalyticsWeeklyFragment extends Fragment {
         lineChart.animateY(1000);
         lineChart.invalidate();
     }
-
 
     private static class IntValueFormatter extends ValueFormatter {
         @Override

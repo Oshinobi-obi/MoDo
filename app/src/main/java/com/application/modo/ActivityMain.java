@@ -73,6 +73,13 @@ public class ActivityMain extends AppCompatActivity {
             setActiveIcon(R.id.ibtnProfile1);
         });
 
+        // 🔁 Add logic to handle RLInsightsFragment navigation
+        fabAddTask1.setOnLongClickListener(v -> {
+            loadFragment(new RLInsightsFragment());
+            Toast.makeText(this, "RL Insights loaded", Toast.LENGTH_SHORT).show();
+            return true;
+        });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
