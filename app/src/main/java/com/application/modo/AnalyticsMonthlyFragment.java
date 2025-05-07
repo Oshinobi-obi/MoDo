@@ -134,7 +134,7 @@ public class AnalyticsMonthlyFragment extends Fragment {
                                             if ("High".equalsIgnoreCase(priority)) highCompleted[i]++;
                                             else if ("Medium".equalsIgnoreCase(priority)) mediumCompleted[i]++;
                                             else if ("Low".equalsIgnoreCase(priority)) lowCompleted[i]++;
-                                        } else if (status.equalsIgnoreCase("Missed")) {
+                                        } else if (status.equalsIgnoreCase("Missing")) {
                                             missedPerWeek[i]++;
                                             if ("High".equalsIgnoreCase(priority)) highMissed[i]++;
                                             else if ("Medium".equalsIgnoreCase(priority)) mediumMissed[i]++;
@@ -164,7 +164,7 @@ public class AnalyticsMonthlyFragment extends Fragment {
                                     end = cal.getTime();
                                     if (!date.before(start) && !date.after(end)) {
                                         if (status.equalsIgnoreCase("Completed")) previousCompleted++;
-                                        else if (status.equalsIgnoreCase("Missed")) previousMissed++;
+                                        else if (status.equalsIgnoreCase("Missing")) previousMissed++;
                                         break;
                                     }
                                 }
@@ -322,10 +322,12 @@ public class AnalyticsMonthlyFragment extends Fragment {
     private void setupBarChart(int[] completed, int[] missed, List<String> labels) {
         List<BarEntry> completedEntries = new ArrayList<>();
         List<BarEntry> missedEntries = new ArrayList<>();
+
         for (int i = 0; i < labels.size(); i++) {
             completedEntries.add(new BarEntry(i, completed[i]));
             missedEntries.add(new BarEntry(i, missed[i]));
         }
+
         BarDataSet completedSet = new BarDataSet(completedEntries, "Completed Task");
         completedSet.setColor(Color.rgb(49, 48, 55));
         completedSet.setValueTextColor(Color.BLACK);
@@ -339,13 +341,31 @@ public class AnalyticsMonthlyFragment extends Fragment {
         missedSet.setValueFormatter(new IntValueFormatter());
 
         BarData barData = new BarData(completedSet, missedSet);
+
+        if (completedEntries.isEmpty() && missedEntries.isEmpty()) {
+            barChart.clear();
+            return;
+        }
+
         barData.setBarWidth(0.3f);
         barChart.setData(barData);
 
+        float groupSpace = 0.3f;
+        float barSpace = 0.05f;
+        float barWidth = 0.3f;
+        barData.setBarWidth(barWidth);
+
+        float groupWidth = barData.getGroupWidth(groupSpace, barSpace);
+        barChart.getXAxis().setAxisMinimum(0f);
+        barChart.getXAxis().setAxisMaximum(groupWidth * labels.size());
+
+        try {
+            barChart.groupBars(0f, groupSpace, barSpace);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(barData.getGroupWidth(0.3f, 0.05f) * labels.size());
-        barChart.groupBars(0f, 0.3f, 0.05f);
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -362,22 +382,15 @@ public class AnalyticsMonthlyFragment extends Fragment {
 
         barChart.getAxisLeft().setTextColor(Color.BLACK);
         barChart.getAxisRight().setEnabled(false);
-        Legend legend = barChart.getLegend();
-        legend.setTextColor(Color.BLACK);
-        legend.setTextSize(12f);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        legend.setDrawInside(false);
-        legend.setXEntrySpace(40f);
+        barChart.getLegend().setTextColor(Color.BLACK);
         barChart.setTouchEnabled(false);
         barChart.setScaleEnabled(false);
         barChart.setPinchZoom(false);
-        barChart.setDescription(null);
-        barChart.setExtraOffsets(10, 10, 10, 10);
+        barChart.getDescription().setEnabled(false);
         barChart.animateY(1000);
         barChart.invalidate();
     }
+
 
     private void setupPieChart(int high, int medium, int low) {
         List<PieEntry> entries = new ArrayList<>();

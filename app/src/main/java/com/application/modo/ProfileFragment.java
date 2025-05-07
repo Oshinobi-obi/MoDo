@@ -7,23 +7,38 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class ProfileFragment extends Fragment {
 
     private Button btnBadges, btnPoints, btnRewards, btnSettings;
-    private TextView tvUsername;
+    private TextView tvUsername, tvStatus1, tvJoinDate1;
     private ImageView imgvPicture;
     private Dialog avatarDialog;
     private String selectedAvatarName = "default_avatar";
 
+    // Include default avatar first
     private final String[] avatarNames = {
-            "bear", "cat", "chicken", "dog", "gorilla", "owl", "panda", "rabbit", "sealion"
+            "default_avatar", "bear", "cat", "chicken", "dog", "gorilla", "owl", "panda", "rabbit", "sealion"
     };
 
     private FirebaseAuth mAuth;
@@ -32,119 +47,162 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Find Views
         btnBadges = view.findViewById(R.id.btnBadges);
         btnPoints = view.findViewById(R.id.btnPoints);
         btnRewards = view.findViewById(R.id.btnRewards);
         btnSettings = view.findViewById(R.id.btnSettings);
         tvUsername = view.findViewById(R.id.tvUsername);
+        tvStatus1  = view.findViewById(R.id.tvStatus1);
+        tvJoinDate1 = view.findViewById(R.id.tvJoinDate1);
         imgvPicture = view.findViewById(R.id.imgvPicture);
 
-        // Load user info
         loadUserInfo();
-
-        // Default fragment inside profile
         loadFragment(new ProfileBadges());
         updateButtonStyles(btnBadges);
 
-        // Button click events
-        btnBadges.setOnClickListener(v -> {
-            loadFragment(new ProfileBadges());
-            updateButtonStyles(btnBadges);
-        });
-
-        btnPoints.setOnClickListener(v -> {
-            loadFragment(new ProfilePoints());
-            updateButtonStyles(btnPoints);
-        });
-
-        btnRewards.setOnClickListener(v -> {
-            loadFragment(new ProfileRewards());
-            updateButtonStyles(btnRewards);
-        });
-
-        btnSettings.setOnClickListener(v -> {
-            startActivity(new android.content.Intent(getContext(), ProfileSettings.class));
-        });
-
+        btnBadges.setOnClickListener(v -> { loadFragment(new ProfileBadges()); updateButtonStyles(btnBadges); });
+        btnPoints.setOnClickListener(v -> { loadFragment(new ProfilePoints()); updateButtonStyles(btnPoints); });
+        btnRewards.setOnClickListener(v -> { loadFragment(new ProfileRewards()); updateButtonStyles(btnRewards); });
+        btnSettings.setOnClickListener(v -> startActivity(new android.content.Intent(getContext(), ProfileSettings.class)));
         imgvPicture.setOnClickListener(v -> showAvatarSelector());
 
         return view;
     }
 
+    private int extractPoints(String str) {
+        try {
+            return Integer.parseInt(str.replaceAll("[^\\d]", ""));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private void loadUserInfo() {
         if (mAuth.getCurrentUser() == null) return;
         String uid = mAuth.getCurrentUser().getUid();
         db.collection("users").document(uid)
                 .get()
                 .addOnSuccessListener(document -> {
+                    if (!isAdded()) return;
                     if (document.exists()) {
-                        tvUsername.setText(document.getString("username"));
+                        String username = document.getString("username");
+                        tvUsername.setText(username != null ? username : "User");
+
                         String avatarName = document.getString("profile");
                         if (avatarName == null || avatarName.isEmpty()) avatarName = "default_avatar";
-                        int resId = getResources().getIdentifier(avatarName, "drawable", requireContext().getPackageName());
+                        int resId = requireContext().getResources().getIdentifier(
+                                avatarName, "drawable", requireContext().getPackageName());
                         imgvPicture.setImageResource(resId);
+
+                        List<String> earned = (List<String>) document.get("profile_badges");
+                        tvStatus1.setText((earned != null && !earned.isEmpty())
+                                ? earned.get(earned.size() - 1)
+                                : "Newcomer");
+
+                        Date joinDate = document.getDate("JoinedDate");
+                        if (joinDate != null) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+                            tvJoinDate1.setText(sdf.format(joinDate));
+                        } else {
+                            tvJoinDate1.setText("Unknown");
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
+                    if (!isAdded()) return;
                     tvUsername.setText("User");
                     imgvPicture.setImageResource(R.drawable.default_avatar);
+                    tvStatus1.setText("Newcomer");
+                    tvJoinDate1.setText("Unknown");
                 });
     }
 
     private void showAvatarSelector() {
-        avatarDialog = new Dialog(requireContext());
-        avatarDialog.setContentView(R.layout.dialog_avatar_preview);
-        avatarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        avatarDialog.setCancelable(true);
+        if (!isAdded() || mAuth.getCurrentUser() == null) return;
+        String uid = mAuth.getCurrentUser().getUid();
 
-        ImageView imgPreview = avatarDialog.findViewById(R.id.imgPreview);
-        Button btnSave = avatarDialog.findViewById(R.id.btnSaveAvatar);
-        GridLayout gridAvatars = avatarDialog.findViewById(R.id.gridAvatars);
+        // Fetch total points
+        db.collection("users").document(uid).collection("profile_points")
+                .get()
+                .addOnSuccessListener(pointsSnap -> {
+                    if (!isAdded()) return;
+                    int totalPts = 0;
+                    for (QueryDocumentSnapshot d : pointsSnap) {
+                        totalPts += extractPoints(d.getString("points"));
+                    }
 
-        imgPreview.setImageDrawable(imgvPicture.getDrawable());
+                    // Determine unlocked avatars based on new milestones
+                    Map<String, String[]> defs = RewardDefinitions.getAll();
+                    List<String> unlocked = new ArrayList<>();
+                    unlocked.add("default_avatar");
 
-        for (String avatarName : avatarNames) {
-            int resId = getResources().getIdentifier(avatarName, "drawable", requireContext().getPackageName());
-            ImageView avatarView = getImageView(avatarName, resId, imgPreview);
-            gridAvatars.addView(avatarView);
-        }
+                    for (Map.Entry<String, String[]> e : defs.entrySet()) {
+                        String name = e.getKey().toLowerCase();
+                        String milestoneStr = e.getValue()[1]; // e.g. "(Milestone: 20 pts)"
+                        int thresh;
+                        try {
+                            thresh = Integer.parseInt(milestoneStr.replaceAll("[^\\d]", ""));
+                        } catch (Exception ex) {
+                            continue;
+                        }
+                        if (totalPts >= thresh) unlocked.add(name);
+                    }
 
-        btnSave.setOnClickListener(v -> {
-            int resId = getResources().getIdentifier(selectedAvatarName, "drawable", requireContext().getPackageName());
-            imgvPicture.setImageResource(resId);
-            updateAvatarInFirestore(selectedAvatarName);
-            avatarDialog.dismiss();
-        });
+                    avatarDialog = new Dialog(requireContext());
+                    avatarDialog.setContentView(R.layout.dialog_avatar_preview);
+                    avatarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    avatarDialog.setCancelable(true);
 
-        avatarDialog.show();
-    }
+                    ImageView imgPreview = avatarDialog.findViewById(R.id.imgPreview);
+                    Button btnSave = avatarDialog.findViewById(R.id.btnSaveAvatar);
+                    GridLayout gridAvatars = avatarDialog.findViewById(R.id.gridAvatars);
 
-    @NonNull
-    private ImageView getImageView(String avatarName, int resId, ImageView imgPreview) {
-        ImageView avatarView = new ImageView(requireContext());
-        avatarView.setImageResource(resId);
-        avatarView.setAdjustViewBounds(true);
-        avatarView.setMaxHeight(150);
-        avatarView.setMaxWidth(150);
+                    gridAvatars.setColumnCount(2);
+                    gridAvatars.removeAllViews();
+                    imgPreview.setImageDrawable(imgvPicture.getDrawable());
 
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.setMargins(10, 10, 10, 10);
-        params.setGravity(Gravity.CENTER);
-        avatarView.setLayoutParams(params);
+                    for (String avatarName : avatarNames) {
+                        int resId = requireContext().getResources().getIdentifier(
+                                avatarName, "drawable", requireContext().getPackageName());
+                        ImageView avatarView = new ImageView(requireContext());
+                        avatarView.setImageResource(resId);
+                        avatarView.setAdjustViewBounds(true);
+                        avatarView.setMaxHeight(150);
+                        avatarView.setMaxWidth(150);
 
-        avatarView.setOnClickListener(v -> {
-            selectedAvatarName = avatarName;
-            imgPreview.setImageResource(resId);
-        });
-        return avatarView;
+                        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                        params.setMargins(10, 10, 10, 10);
+                        params.setGravity(Gravity.CENTER);
+                        avatarView.setLayoutParams(params);
+
+                        if (!unlocked.contains(avatarName)) {
+                            avatarView.setAlpha(0.3f);
+                            avatarView.setEnabled(false);
+                        } else {
+                            avatarView.setOnClickListener(v -> {
+                                selectedAvatarName = avatarName;
+                                imgPreview.setImageResource(resId);
+                            });
+                        }
+                        gridAvatars.addView(avatarView);
+                    }
+
+                    btnSave.setOnClickListener(v -> {
+                        int finalRes = requireContext().getResources().getIdentifier(
+                                selectedAvatarName, "drawable", requireContext().getPackageName());
+                        imgvPicture.setImageResource(finalRes);
+                        updateAvatarInFirestore(selectedAvatarName);
+                        avatarDialog.dismiss();
+                    });
+                    avatarDialog.show();
+                });
     }
 
     private void updateAvatarInFirestore(String avatarName) {
@@ -152,18 +210,15 @@ public class ProfileFragment extends Fragment {
         String uid = mAuth.getCurrentUser().getUid();
         db.collection("users").document(uid)
                 .update("profile", avatarName)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(getContext(), "Avatar saved!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to save avatar", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(unused -> Toast.makeText(requireContext(), "Avatar saved!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to save avatar", Toast.LENGTH_SHORT).show());
     }
 
     private void loadFragment(Fragment fragment) {
+        if (!isAdded()) return;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.clProfileFragment, fragment);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     private void updateButtonStyles(Button selectedButton) {
@@ -173,7 +228,6 @@ public class ProfileFragment extends Fragment {
         int defaultText = getResources().getColor(R.color.default_text_color, requireContext().getTheme());
 
         Button[] buttons = {btnBadges, btnPoints, btnRewards};
-
         for (Button btn : buttons) {
             if (btn == selectedButton) {
                 btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(selectedBg));
@@ -182,6 +236,14 @@ public class ProfileFragment extends Fragment {
                 btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(defaultBg));
                 btn.setTextColor(defaultText);
             }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (avatarDialog != null && avatarDialog.isShowing()) {
+            avatarDialog.dismiss();
         }
     }
 }

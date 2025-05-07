@@ -3,6 +3,7 @@ package com.application.modo;
 import com.google.firebase.Timestamp;
 
 public class AddTask {
+    private int order;
     private String id;
     private String title;
     private String description;
@@ -52,4 +53,12 @@ public class AddTask {
     public void setStatus(String status) { this.status = status; }
     public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
     public void setEndTime(Long endTime) { this.endTime = endTime; }     // 🆕
+
+    //order logic
+    public int getOrder() {
+        return order;
+    }
+    public void setOrder(int order) {
+        this.order = order;
+    }
 }

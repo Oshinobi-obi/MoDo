@@ -80,7 +80,7 @@ public class AnalyticsOverallFragment extends Fragment {
 
                         if (status != null) {
                             if (status.equalsIgnoreCase("Completed")) completedTasks++;
-                            else if (status.equalsIgnoreCase("Missed")) missedTasks++;
+                            else if (status.equalsIgnoreCase("Missing")) missedTasks++;
                             else if (status.equalsIgnoreCase("Ongoing")) ongoingTasks++;
                             else if (status.equalsIgnoreCase("Upcoming")) upcomingTasks++;
                         }
@@ -108,7 +108,7 @@ public class AnalyticsOverallFragment extends Fragment {
                                     if ("High".equalsIgnoreCase(priority)) highCompleted[dayIndex]++;
                                     else if ("Medium".equalsIgnoreCase(priority)) mediumCompleted[dayIndex]++;
                                     else if ("Low".equalsIgnoreCase(priority)) lowCompleted[dayIndex]++;
-                                } else if (status.equalsIgnoreCase("Missed")) {
+                                } else if (status.equalsIgnoreCase("Missing")) {
                                     missedPerDay[dayIndex]++;
                                     if ("High".equalsIgnoreCase(priority)) highMissed[dayIndex]++;
                                     else if ("Medium".equalsIgnoreCase(priority)) mediumMissed[dayIndex]++;

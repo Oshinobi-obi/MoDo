@@ -20,9 +20,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
 
 public class SignUp2nd extends AppCompatActivity {
 
@@ -192,8 +194,9 @@ public class SignUp2nd extends AppCompatActivity {
         user.put("failedAttempts", 0);
         user.put("age", "");
         user.put("mustResetPassword", false);
-        user.put("taskreminder", "");
-        user.put("breakreminder", "");
+        user.put("taskreminder", "1 hour before");
+        user.put("breakreminder", "30 minutes");
+        user.put("JoinedDate", FieldValue.serverTimestamp());
 
         db.collection("users").document(userId)
                 .set(user)

@@ -137,7 +137,7 @@ public class AnalyticsWeeklyFragment extends Fragment {
                                 for (String prevDay : previous7Days) {
                                     if (prevDay.equals(day)) {
                                         if (status.equalsIgnoreCase("Completed")) prevCompleted++;
-                                        else if (status.equalsIgnoreCase("Missed")) prevMissed++;
+                                        else if (status.equalsIgnoreCase("Missing")) prevMissed++;
                                         break;
                                     }
                                 }

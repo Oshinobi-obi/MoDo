@@ -1,6 +1,7 @@
 package com.application.modo;
 
 public class CalendarTask {
+    private int order;
     private String title;
     private String description;
     private String deadline;
@@ -39,5 +40,12 @@ public class CalendarTask {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
