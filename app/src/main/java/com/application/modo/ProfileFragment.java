@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
 
     // Include default avatar first
     private final String[] avatarNames = {
-            "default_avatar", "bear", "cat", "chicken", "dog", "gorilla", "owl", "panda", "rabbit", "sealion"
+        "bear", "cat", "chicken", "dog", "gorilla", "owl", "panda", "rabbit", "sealion"
     };
 
     private FirebaseAuth mAuth;
@@ -138,14 +138,13 @@ public class ProfileFragment extends Fragment {
                         totalPts += extractPoints(d.getString("points"));
                     }
 
-                    // Determine unlocked avatars based on new milestones
+                    // Determine unlocked avatars based on milestones
                     Map<String, String[]> defs = RewardDefinitions.getAll();
                     List<String> unlocked = new ArrayList<>();
                     unlocked.add("default_avatar");
-
                     for (Map.Entry<String, String[]> e : defs.entrySet()) {
                         String name = e.getKey().toLowerCase();
-                        String milestoneStr = e.getValue()[1]; // e.g. "(Milestone: 20 pts)"
+                        String milestoneStr = e.getValue()[1];
                         int thresh;
                         try {
                             thresh = Integer.parseInt(milestoneStr.replaceAll("[^\\d]", ""));
@@ -157,29 +156,39 @@ public class ProfileFragment extends Fragment {
 
                     avatarDialog = new Dialog(requireContext());
                     avatarDialog.setContentView(R.layout.dialog_avatar_preview);
-                    avatarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    avatarDialog.getWindow().setBackgroundDrawable(
+                            new ColorDrawable(android.graphics.Color.TRANSPARENT)
+                    );
                     avatarDialog.setCancelable(true);
 
                     ImageView imgPreview = avatarDialog.findViewById(R.id.imgPreview);
-                    Button btnSave = avatarDialog.findViewById(R.id.btnSaveAvatar);
+                    Button btnSave   = avatarDialog.findViewById(R.id.btnSaveAvatar);
                     GridLayout gridAvatars = avatarDialog.findViewById(R.id.gridAvatars);
 
-                    gridAvatars.setColumnCount(2);
+                    // → switch to 3 columns, use default margins
+                    gridAvatars.setColumnCount(3);
+                    gridAvatars.setUseDefaultMargins(true);
+                    gridAvatars.setAlignmentMode(GridLayout.ALIGN_MARGINS);
                     gridAvatars.removeAllViews();
+
                     imgPreview.setImageDrawable(imgvPicture.getDrawable());
 
                     for (String avatarName : avatarNames) {
-                        int resId = requireContext().getResources().getIdentifier(
-                                avatarName, "drawable", requireContext().getPackageName());
+                        int resId = requireContext().getResources()
+                                .getIdentifier(avatarName, "drawable",
+                                        requireContext().getPackageName());
                         ImageView avatarView = new ImageView(requireContext());
                         avatarView.setImageResource(resId);
                         avatarView.setAdjustViewBounds(true);
-                        avatarView.setMaxHeight(150);
-                        avatarView.setMaxWidth(150);
 
-                        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                        // → give each cell equal weight so rows of 3
+                        GridLayout.LayoutParams params = new GridLayout.LayoutParams(
+                                GridLayout.spec(GridLayout.UNDEFINED, 1f),
+                                GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                        );
+                        params.width  = 0;  // weight=1f will distribute evenly
+                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         params.setMargins(10, 10, 10, 10);
-                        params.setGravity(Gravity.CENTER);
                         avatarView.setLayoutParams(params);
 
                         if (!unlocked.contains(avatarName)) {
@@ -195,12 +204,14 @@ public class ProfileFragment extends Fragment {
                     }
 
                     btnSave.setOnClickListener(v -> {
-                        int finalRes = requireContext().getResources().getIdentifier(
-                                selectedAvatarName, "drawable", requireContext().getPackageName());
+                        int finalRes = requireContext().getResources()
+                                .getIdentifier(selectedAvatarName, "drawable",
+                                        requireContext().getPackageName());
                         imgvPicture.setImageResource(finalRes);
                         updateAvatarInFirestore(selectedAvatarName);
                         avatarDialog.dismiss();
                     });
+
                     avatarDialog.show();
                 });
     }
